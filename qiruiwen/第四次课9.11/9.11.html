@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVG图标</title>
+    <script src="https://at.alicdn.com/t/c/font_5231911_es2b7q1vne.js?spm=a313x.manage_type_myprojects.i1.10.19b73a81mmdqaV&file=font_5231911_es2b7q1vne.js"></script>
+    <link rel="stylesheet" href="./svg.9.9.css">
+    <style>
+        .icon {
+        width: 1em;
+        height: 1em;
+        vertical-align: -0.15em;
+        fill: currentColor;
+        overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <h3>SVG图标</h3>
+    <div class="tab-nav">
+        <div class="tab-item active" onclick="changeTab(this)">
+            <svg class="icon" aria-hidden="true">
+            <use xlink:href="#icon-shouye_5"></use>
+            </svg>
+            <span>首页</span>
+            <!--div.budge-dot回车-->
+            <!--红点-->
+            <div class="budge-dot" id="budge-home"></div>
+        </div>
+        <div class="tab-item" onclick="changeTab(this)">
+            <svg class="icon" aria-hidden="true">
+            <use xlink:href="#icon-tianjiajihua"></use>
+            </svg>
+            <span>计划</span>
+            <!--数字红点-->
+            <div class="budge-num" id="budge-plan">6</div>
+        </div>
+        <div class="tab-item" onclick="changeTab(this)">
+            <svg class="icon" aria-hidden="true">
+            <use xlink:href="#icon-shoucang"></use>
+            </svg>
+            <span>收藏</span>
+            <div class="budge-border" id="budge-collect"></div>
+        </div>
+        <div class="tab-item" onclick="changeTab(this)">
+            <svg class="icon" aria-hidden="true">
+            <use xlink:href="#icon-wode"></use>
+            </svg>
+            <span>我的</span>
+             <div class="budge-dot max" id="budge-my">100+</div>
+        </div>
+        <script>
+            // 写一个函数，当我点击当前的item，让他的颜色发生变化
+            function changeTab(current){
+                let tabs = document.querySelectorAll(".tab-item");
+                for(let i=0;i<tabs.length;i++){
+                    tabs[i].classList.remove("active");
+                }
+                current.classList.add("active");
+                }
+            </script>
+    </div>
+</body>

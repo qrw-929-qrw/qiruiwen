@@ -82,3 +82,17 @@ body {
   color: #cc0000;
   text-decoration: underline;
 }
+/* 返回课堂实践目录首页入口（作者：戚瑞雯 qrw） */
+.qrw_back {
+  margin: 14px 0 6px;
+  text-align: center;
+  font-size: 13px;
+}
+.qrw_back a {
+  color: #666;
+  text-decoration: none;
+}
+.qrw_back a:hover {
+  color: #cc0000;
+  text-decoration: underline;
+}

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<!--
+  作者：戚瑞雯
+  创建时间：2026-11-04
+  使用大模型：GLM-5.3-Flash
+  功能名称：旅游投诉新闻 Tab 选项卡（最新投诉 / 官方回应 / 追踪调查，qrw 前缀规范版）
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>旅游投诉新闻选项卡 - 戚瑞雯 qrw</title>
+<!-- 样式文件外部引用，所有类名以 qrw_ 开头（作者：戚瑞雯 qrw） -->
+<link rel="stylesheet" href="css/qrw_style.css">
+</head>
+<body>
+
+<!-- 整体盒子（作者：戚瑞雯 qrw） -->
+<div class="qrw_box">
+
+  <!-- 选项卡导航栏：白底，未选中黑字无边框，选中项红字+红色外框（无底边、与浅蓝底线相连）（作者：戚瑞雯 qrw）
+       官方回应为默认选中，点击切换（事件由 js/qrw_tab.js 监听） -->
+  <ul class="qrw_tab" id="qrw_tabNav">
+    <li><span class="qrw_tab_txt">最新投诉</span></li>
+    <li class="qrw_active"><span class="qrw_tab_txt">官方回应</span></li>
+    <li><span class="qrw_tab_txt">追踪调查</span></li>
+  </ul>
+
+  <!-- 面板一：最新投诉 -->
+  <ul class="qrw_panel" id="qrw_panel_1">
+    <li><a href="javascript:;">北京火车站出租车乱调查 司机统计仪器坏</a></li>
+    <li><a href="javascript:;">公园仙人掌遭刻字"毁容" 一棵仙人掌被刻</a></li>
+    <li><a href="javascript:;">昆明现游客"裸手搭鹏" 网友速录(组图)</a></li>
+    <li><a href="javascript:;">四川一星级酒店公开建1年未开放变"菜楼"</a></li>
+    <li><a href="javascript:;">北京北海地坛公园暗藏高端会所 园方称"碾</a></li>
+    <li><a href="javascript:;">北京北海金丝楠木柱遭英文手写"签名"破坏</a></li>
+    <li><a href="javascript:;">北京动物园门票玩捆绑 低价门票遭"雪藏"</a></li>
+    <li><a href="javascript:;">女子不满"无购物"投诉旅行社 和东北一样没</a></li>
+    <li><a href="javascript:;">老人多人团游权益受损 旅行社被曝对老</a></li>
+  </ul>
+
+  <!-- 面板二：官方回应（默认显示） -->
+  <ul class="qrw_panel qrw_active" id="qrw_panel_2">
+    <li><a href="javascript:;">大绿鸭、速尾鸭装热闹 法官解读"山寨鸭"是</a></li>
+    <li><a href="javascript:;">国家旅游局回应涨价："团队游价格正常</a></li>
+    <li><a href="javascript:;">国家旅游局回应"新旅游法实施后旅行社团</a></li>
+    <li><a href="javascript:;">出游遇纠纷可依《旅游法》维权 明确旅游投</a></li>
+    <li><a href="javascript:;">解决新旅游法三"谣传" 扫货缺可安心</a></li>
+    <li><a href="javascript:;">《旅游法》将遏制"零负团费"和"门票经济</a></li>
+    <li><a href="javascript:;">文明旅游将入旅游合同 行为指南和公约将作</a></li>
+    <li><a href="javascript:;">天津二季度旅行社服务质量分布 投诉涉及8</a></li>
+    <li><a href="javascript:;">敦煌：国家法定节假日所有景区门票免/半价</a></li>
+  </ul>
+
+  <!-- 面板三：追踪调查 -->
+  <ul class="qrw_panel" id="qrw_panel_3">
+    <li><a href="javascript:;">《旅游法》实施半月 自贵景区违规正一日游</a></li>
+    <li><a href="javascript:;">迪喀希特拉旅游"怪象"：涉事导游等已</a></li>
+    <li><a href="javascript:;">导游挣钱就"攻略"：逃离旅行社自己</a></li>
+    <li><a href="javascript:;">九寨沟为何变成"死胡同"？——数千游客</a></li>
+    <li><a href="javascript:;">九寨沟为何仍现游客滞留？</a></li>
+    <li><a href="javascript:;">旅游之尴尬：落爷游博馆会 女士超性恋进</a></li>
+    <li><a href="javascript:;">记者暗访兵马俑景区：玉器店买玉 过期门票</a></li>
+    <li><a href="javascript:;">假冒香港游客借卡转账 两女子忽悠女大学生</a></li>
+    <li><a href="javascript:;">39家旅游单位违法被罚1800万 购物店结盟绕</a></li>
+  </ul>
+
+</div>
+
+<!-- 返回课堂实践目录首页入口（作者：戚瑞雯 qrw） -->
+<p class="qrw_back"><a href="../index.html">← 返回课堂实践目录首页</a></p>
+
+<!-- 脚本文件外部引用，所有变量 / 函数名以 qrw_ 开头（作者：戚瑞雯 qrw） -->
+<script src="js/qrw_tab.js"></script>
+</body>
+</html>

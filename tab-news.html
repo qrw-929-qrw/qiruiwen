@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<!--
+  作者：戚瑞雯
+  创建时间：2026-11-04
+  使用大模型：GLM-5.3-Flash
+  功能名称：新闻 Tab 选项卡（国内 / 省内 / 国际）
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>新闻 Tab 选项卡</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:"PingFang SC","Microsoft YaHei","Segoe UI",system-ui,sans-serif;
+    background:linear-gradient(135deg,#1a1c2c,#243b55);
+    min-height:100vh;display:grid;place-items:center;padding:24px;color:#1f2733;line-height:1.6
+  }
+  .tabs-card{width:100%;max-width:640px;background:#fff;border-radius:14px;
+    box-shadow:0 10px 30px rgba(20,28,48,.25);overflow:hidden}
+  /* 选项卡头部 */
+  .tab-bar{display:flex;background:#eef1f7;border-bottom:1px solid #e7eaf0}
+  .tab-bar button{
+    flex:1;border:none;background:transparent;padding:14px 0;font-size:15px;
+    color:#5b6472;cursor:pointer;transition:all .2s;position:relative
+  }
+  .tab-bar button:hover{color:#3f5fd9}
+  .tab-bar button.active{
+    color:#3f5fd9;font-weight:700;background:#fff
+  }
+  .tab-bar button.active::after{
+    content:"";position:absolute;left:20%;right:20%;bottom:0;height:3px;
+    border-radius:3px 3px 0 0;background:#5b7cfa
+  }
+  /* 新闻面板 */
+  .panel{display:none;padding:10px 22px 18px}
+  .panel.active{display:block;animation:fade .25s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .panel ul{list-style:none}
+  .panel li{
+    display:flex;justify-content:space-between;align-items:center;gap:12px;
+    padding:12px 2px;border-bottom:1px dashed #e7eaf0;font-size:14px
+  }
+  .panel li:last-child{border-bottom:none}
+  .panel li a{color:#1f2733;text-decoration:none;flex:1}
+  .panel li a:hover{color:#3f5fd9}
+  .panel li .tag{
+    flex:none;font-size:12px;color:#3f5fd9;background:#eef3ff;
+    padding:2px 8px;border-radius:10px;margin-right:8px
+  }
+  .panel li time{flex:none;color:#9aa3b0;font-size:12px}
+</style>
+</head>
+<body>
+
+<div class="tabs-card">
+  <div class="tab-bar" id="tabBar">
+    <button class="active" data-panel="domestic">国内新闻</button>
+    <button data-panel="province">省内新闻</button>
+    <button data-panel="world">国际新闻</button>
+  </div>
+
+  <section class="panel active" id="panel-domestic">
+    <ul>
+      <li><a href="#"><span class="tag">要闻</span>全国秋粮收购有序推进，市场供应充足</a><time>11-03</time></li>
+      <li><a href="#"><span class="tag">科技</span>我国成功发射新型遥感卫星，进入预定轨道</a><time>11-02</time></li>
+      <li><a href="#"><span class="tag">民生</span>多地出台新措施，进一步方便群众办事出行</a><time>11-01</time></li>
+      <li><a href="#"><span class="tag">交通</span>新一批高铁项目建成通车，路网持续完善</a><time>10-31</time></li>
+      <li><a href="#"><span class="tag">文旅</span>秋季旅游热度上升，各地推出特色活动</a><time>10-30</time></li>
+    </ul>
+  </section>
+
+  <section class="panel" id="panel-province">
+    <ul>
+      <li><a href="#"><span class="tag">经济</span>我省高新技术产业产值保持稳步增长</a><time>11-03</time></li>
+      <li><a href="#"><span class="tag">教育</span>省内多所高校新增一批省级重点实验项目</a><time>11-02</time></li>
+      <li><a href="#"><span class="tag">生态</span>全省空气质量持续改善，优良天数增加</a><time>11-01</time></li>
+      <li><a href="#"><span class="tag">农业</span>全省秋收秋种工作接近尾声，收成好于往年</a><time>10-31</time></li>
+      <li><a href="#"><span class="tag">医疗</span>省级医院专家团队下沉基层开展巡诊服务</a><time>10-30</time></li>
+    </ul>
+  </section>
+
+  <section class="panel" id="panel-world">
+    <ul>
+      <li><a href="#"><span class="tag">经济</span>多国机构预测全球经济将保持温和增长</a><time>11-03</time></li>
+      <li><a href="#"><span class="tag">气候</span>国际气候大会就减排目标展开新一轮磋商</a><time>11-02</time></li>
+      <li><a href="#"><span class="tag">科技</span>多国联合开展深空探测合作项目取得进展</a><time>11-01</time></li>
+      <li><a href="#"><span class="tag">体育</span>国际赛事密集开赛，各国代表团陆续抵达</a><time>10-31</time></li>
+      <li><a href="#"><span class="tag">文化</span>海外多国举办中国文化主题展览活动</a><time>10-30</time></li>
+    </ul>
+  </section>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var bar = document.getElementById("tabBar");
+  var panels = document.querySelectorAll(".panel");
+
+  // 函数功能：切换选项卡——根据传入的按钮，高亮该按钮并显示对应面板，隐藏其余面板
+  function switchTab(btn) {
+    // 1. 移除所有按钮的高亮，再给当前按钮加上
+    bar.querySelectorAll("button").forEach(function (b) {
+      b.classList.remove("active");
+    });
+    btn.classList.add("active");
+    // 2. 隐藏所有面板，只显示按钮 data-panel 对应的面板
+    panels.forEach(function (p) {
+      p.classList.toggle("active", p.id === "panel-" + btn.getAttribute("data-panel"));
+    });
+  }
+
+  // 事件委托：点击 tab 栏内任意按钮时切换到对应选项卡
+  bar.addEventListener("click", function (e) {
+    var btn = e.target.closest("button");
+    if (!btn || btn.classList.contains("active")) return;
+    switchTab(btn);
+  });
+})();
+</script>
+</body>
+</html>

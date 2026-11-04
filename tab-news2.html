@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<!--
+  作者：戚瑞雯
+  创建时间：2026-11-04
+  使用大模型：GLM-5.3-Flash
+  功能名称：新闻 Tab 选项卡（国内 / 省内 / 国际 / 最热，JS 外部引用可复用版）
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>新闻 Tab 选项卡（外部 JS 复用版）</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:"PingFang SC","Microsoft YaHei","Segoe UI",system-ui,sans-serif;
+    background:linear-gradient(135deg,#1a1c2c,#243b55);
+    min-height:100vh;display:grid;place-items:center;padding:24px;color:#1f2733;line-height:1.6
+  }
+  .tabs-card{width:100%;max-width:640px;background:#fff;border-radius:14px;
+    box-shadow:0 10px 30px rgba(20,28,48,.25);overflow:hidden}
+  /* 选项卡头部（4 个按钮） */
+  .tab-bar{display:flex;background:#eef1f7;border-bottom:1px solid #e7eaf0}
+  .tab-bar button{
+    flex:1;border:none;background:transparent;padding:14px 0;font-size:15px;
+    color:#5b6472;cursor:pointer;transition:all .2s;position:relative
+  }
+  .tab-bar button:hover{color:#3f5fd9}
+  .tab-bar button.active{color:#3f5fd9;font-weight:700;background:#fff}
+  .tab-bar button.active::after{
+    content:"";position:absolute;left:18%;right:18%;bottom:0;height:3px;
+    border-radius:3px 3px 0 0;background:#5b7cfa
+  }
+  /* 新闻面板 */
+  .tab-panel{display:none;padding:10px 22px 18px}
+  .tab-panel.active{display:block;animation:fade .25s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .tab-panel ul{list-style:none}
+  .tab-panel li{
+    display:flex;justify-content:space-between;align-items:center;gap:12px;
+    padding:12px 2px;border-bottom:1px dashed #e7eaf0;font-size:14px
+  }
+  .tab-panel li:last-child{border-bottom:none}
+  .tab-panel li a{color:#1f2733;text-decoration:none;flex:1}
+  .tab-panel li a:hover{color:#3f5fd9}
+  .tab-panel li .tag{
+    flex:none;font-size:12px;color:#3f5fd9;background:#eef3ff;
+    padding:2px 8px;border-radius:10px;margin-right:8px
+  }
+  /* 最热新闻面板的标签用暖色区分 */
+  .tab-panel li .tag.hot{color:#d43030;background:#ffecec}
+  .tab-panel li time{flex:none;color:#9aa3b0;font-size:12px}
+</style>
+</head>
+<body>
+
+<div class="tabs-card">
+  <!-- 选项卡头部：国内新闻为默认选中（active 已写在 HTML 上），容器带 data-tabs 供 tab.js 自动初始化 -->
+  <div class="tab-bar" id="tabBar" data-tabs>
+    <button class="active" data-panel="domestic">国内新闻</button>
+    <button data-panel="province">省内新闻</button>
+    <button data-panel="world">国际新闻</button>
+    <button data-panel="hot">最热新闻</button>
+  </div>
+
+  <section class="tab-panel active" id="panel-domestic">
+    <ul>
+      <li><a href="#"><span class="tag">要闻</span>全国秋粮收购有序推进，市场供应充足</a><time>11-03</time></li>
+      <li><a href="#"><span class="tag">科技</span>我国成功发射新型遥感卫星，进入预定轨道</a><time>11-02</time></li>
+      <li><a href="#"><span class="tag">民生</span>多地出台新措施，进一步方便群众办事出行</a><time>11-01</time></li>
+      <li><a href="#"><span class="tag">交通</span>新一批高铁项目建成通车，路网持续完善</a><time>10-31</time></li>
+      <li><a href="#"><span class="tag">文旅</span>秋季旅游热度上升，各地推出特色活动</a><time>10-30</time></li>
+    </ul>
+  </section>
+
+  <section class="tab-panel" id="panel-province">
+    <ul>
+      <li><a href="#"><span class="tag">经济</span>我省高新技术产业产值保持稳步增长</a><time>11-03</time></li>
+      <li><a href="#"><span class="tag">教育</span>省内多所高校新增一批省级重点实验项目</a><time>11-02</time></li>
+      <li><a href="#"><span class="tag">生态</span>全省空气质量持续改善，优良天数增加</a><time>11-01</time></li>
+      <li><a href="#"><span class="tag">农业</span>全省秋收秋种工作接近尾声，收成好于往年</a><time>10-31</time></li>
+      <li><a href="#"><span class="tag">医疗</span>省级医院专家团队下沉基层开展巡诊服务</a><time>10-30</time></li>
+    </ul>
+  </section>
+
+  <section class="tab-panel" id="panel-world">
+    <ul>
+      <li><a href="#"><span class="tag">经济</span>多国机构预测全球经济将保持温和增长</a><time>11-03</time></li>
+      <li><a href="#"><span class="tag">气候</span>国际气候大会就减排目标展开新一轮磋商</a><time>11-02</time></li>
+      <li><a href="#"><span class="tag">科技</span>多国联合开展深空探测合作项目取得进展</a><time>11-01</time></li>
+      <li><a href="#"><span class="tag">体育</span>国际赛事密集开赛，各国代表团陆续抵达</a><time>10-31</time></li>
+      <li><a href="#"><span class="tag">文化</span>海外多国举办中国文化主题展览活动</a><time>10-30</time></li>
+    </ul>
+  </section>
+
+  <section class="tab-panel" id="panel-hot">
+    <ul>
+      <li><a href="#"><span class="tag hot">热榜</span>全国多地迎来今冬第一场雪，网友晒图刷屏</a><time>11-03</time></li>
+      <li><a href="#"><span class="tag hot">热榜</span>新一批重大工程集中开工，投资规模创新高</a><time>11-02</time></li>
+      <li><a href="#"><span class="tag hot">热榜</span>国货新品发布引热议，线上线下销售两旺</a><time>11-01</time></li>
+      <li><a href="#"><span class="tag hot">热榜</span>高校科研成果转化提速，多个项目成功落地</a><time>10-31</time></li>
+      <li><a href="#"><span class="tag hot">热榜</span>全民健身热潮持续，马拉松赛事报名火爆</a><time>10-30</time></li>
+    </ul>
+  </section>
+</div>
+
+<!-- 外部引用 js 文件夹中的选项卡组件 -->
+<script src="js/tab.js"></script>
+</body>
+</html>

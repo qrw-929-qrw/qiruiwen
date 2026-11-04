@@ -1,0 +1,84 @@
+/* ============================================================
+ * 旅游投诉新闻 Tab 选项卡 —— 样式表
+ * 作者：戚瑞雯（qrw）    创建时间：2026-11-04
+ * 规则：本文件所有 CSS 类名均以 qrw_ 开头
+ * 组件样式：白色选项卡栏 + 通长浅蓝色底线 + 选中项红字红框（无底边、与蓝线相连且选中区域无蓝线）+ 未选中黑字无边框
+ * ============================================================ */
+
+* { margin: 0; padding: 0; }
+
+body {
+  background: #fff;
+  font-family: SimSun, "宋体", "Microsoft YaHei", sans-serif;
+}
+
+/* ---------- 整体盒子 ---------- */
+.qrw_box {
+  width: 620px;
+  margin: 30px auto;
+}
+
+/* ---------- 选项卡导航栏（白底；底部通长浅蓝色底线；未选中黑字无边框；选中红字+红色外框，红框与蓝线相连且无底边） ---------- */
+.qrw_tab {
+  display: flex;
+  align-items: flex-end;               /* 选项卡贴底排列，使红框下沿直抵蓝线（作者：戚瑞雯 qrw） */
+  padding: 8px 12px 0;
+  list-style: none;
+  background: #fff;
+  border-bottom: 2px solid #99ccff;   /* 通长浅蓝色底线（作者：戚瑞雯 qrw） */
+}
+.qrw_tab li {
+  margin-right: 22px;
+  font: bold 15px "Microsoft YaHei", "微软雅黑", SimHei, sans-serif;
+  color: #333;
+  cursor: pointer;                     /* hover 光标为手型（作者：戚瑞雯 qrw） */
+  user-select: none;
+}
+/* 选项卡文字：未选中为黑字、无边框；透明边框占位保证选中前后尺寸一致（作者：戚瑞雯 qrw） */
+.qrw_tab li .qrw_tab_txt {
+  display: block;
+  line-height: 26px;
+  padding: 0 10px;
+  color: #333;
+  border: 1px solid transparent;
+}
+/* 选中项：红字 + 红色外框（上左右，无底边）；白底下探 2px 盖住该段蓝线，使选中区域无蓝线（作者：戚瑞雯 qrw） */
+.qrw_tab li.qrw_active .qrw_tab_txt {
+  color: #cc0000;
+  background: #fff;
+  border-color: #cc0000 #cc0000 transparent;
+  padding-bottom: 2px;
+  margin-bottom: -2px;
+}
+
+/* ---------- 新闻面板 ---------- */
+.qrw_panel {
+  display: none;
+  list-style: none;
+}
+.qrw_panel.qrw_active {
+  display: block;
+}
+.qrw_panel li {
+  height: 33px;
+  line-height: 33px;
+  padding: 0 12px;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+/* 每行前面的圆点 · */
+.qrw_panel li::before {
+  content: "· ";
+  color: #666;
+  font-weight: bold;
+}
+.qrw_panel li a {
+  color: #333;
+  text-decoration: none;
+}
+/* 悬停变红（作者：戚瑞雯 qrw） */
+.qrw_panel li a:hover {
+  color: #cc0000;
+  text-decoration: underline;
+}

@@ -81,6 +81,23 @@
   .wy-back a:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(15,43,91,.15)}
 
   footer{text-align:center;margin-top:34px;color:#9ca3af;font-size:13px;line-height:2}
+
+  /* 作业记录区（戚瑞雯 qrw）：表格、代码块、问答折叠 */
+  .wy-notes h3.wy-sub{font-size:15.5px;color:#1d5bbf;margin:20px 0 8px;padding-left:10px;border-left:4px solid #1d5bbf}
+  .wy-notes h3.wy-sub:first-of-type{margin-top:6px}
+  .wy-table{width:100%;border-collapse:collapse;margin:8px 0 14px;font-size:13px}
+  .wy-table th,.wy-table td{border:1px solid #e5e7eb;padding:8px 10px;text-align:left;line-height:1.7}
+  .wy-table th{background:#eef4ff;color:#0f2b5b;font-weight:bold}
+  .wy-table td b{color:#0f2b5b}
+  .wy-code{background:#0f172a;color:#e2e8f0;padding:12px 14px;border-radius:10px;font-size:12.5px;
+    line-height:1.9;overflow:auto;margin:4px 0 12px;font-family:Consolas,"Courier New",monospace}
+  .wy-list{margin:4px 0 12px 22px;font-size:13.5px;color:#374151;line-height:1.95}
+  .wy-qa{border:1px solid #e5e7eb;border-radius:10px;padding:0 16px;margin:12px 0;background:#fafbff}
+  .wy-qa summary{cursor:pointer;padding:11px 0;font-weight:bold;color:#1d5bbf;font-size:14px}
+  .wy-qa summary::marker{color:#e8890c}
+  .wy-qa p{font-size:13.5px;line-height:1.95;color:#374151;margin:0 0 10px}
+  .wy-qa p b{color:#0f2b5b}
+  .wy-qa p.wy-a{color:#166534}
 </style>
 </head>
 <body>
@@ -232,6 +249,135 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- 作业记录与答辩（作者：戚瑞雯 qrw）——直接写在页面里，本地打开也能看到渲染效果 -->
+  <div class="wy-sec wy-notes">
+    <div class="wy-sec-head">
+      <span class="wy-no">记</span>
+      <h2>作业记录与答辩<small>任务一 提示词迭代 · 任务二 creative · 任务三 综合创作</small></h2>
+    </div>
+
+    <h3 class="wy-sub">任务一 · 提示词工程师：让 AI 听懂需求</h3>
+    <table class="wy-table">
+      <tr><th>需求原文</th><th>对应配置</th><th>写进提示词的"硬约束"</th></tr>
+      <tr><td>① 无缝循环</td><td><code>loop</code></td><td><b>loop: true</b></td></tr>
+      <tr><td>② 3.2 秒自动翻页、拖动后不停止</td><td><code>autoplay</code></td><td><b>autoplay: { delay: 3200, disableOnInteraction: false }</b></td></tr>
+      <tr><td>③ 圆点分页器可点击</td><td><code>pagination</code></td><td><b>pagination: { el: '#wyPag4', clickable: true }</b></td></tr>
+      <tr><td>④ 初始效果为 cube</td><td><code>effect</code> / <code>speed</code></td><td><b>effect: 'cube'，speed: 800</b></td></tr>
+    </table>
+
+    <p class="wy-txt"><b>第 1 轮提示词（故意写得很随意）</b></p>
+    <pre class="wy-code">帮我写一个 Swiper 轮播的初始化配置，要能循环播放、自动播放、有分页器、立方体效果。</pre>
+
+    <p class="wy-txt"><b>AI 第 1 版输出（关键片段）</b></p>
+    <pre class="wy-code">new Swiper('#wySw4', {
+  loop: true,
+  autoplay: 3000,
+  pagination: { el: '.swiper-pagination' },
+  effect: 'cube'
+});</pre>
+
+    <p class="wy-txt"><b>第 1 版的问题（逐条对照需求找出来的）</b></p>
+    <ol class="wy-list">
+      <li><code>autoplay: 3000</code> 用了数字简写 → 没有 <code>disableOnInteraction: false</code>，拖动后自动播放会停止，与需求②冲突；</li>
+      <li>延迟是 3000 而不是 3200；</li>
+      <li><code>pagination</code> 只写了 el，没写 <code>clickable: true</code> → 圆点点了不动，与需求③冲突；</li>
+      <li>选择器用默认类名 <code>.swiper-pagination</code>，而页面里分页器是 <code>#wyPag4</code>，多轮播页面会串台；</li>
+      <li>没写 <code>speed</code>，切换动画默认 300ms，切得太"急"。</li>
+    </ol>
+
+    <p class="wy-txt"><b>第 2 轮提示词（把"目标"改成"可验证的约束"）</b></p>
+    <pre class="wy-code">基于页面里已有的 &lt;div class="swiper" id="wySw4"&gt;，输出 Swiper 11 的初始化代码，必须同时满足：
+1) loop: true（最后一张往后翻回到第一张）
+2) autoplay.delay = 3200 毫秒，并且 disableOnInteraction: false（用户拖动松手后自动播放继续）
+3) 分页器使用页面中已有的 id 为 wyPag4 的元素，clickable: true（圆点可点击跳转）
+4) 初始 effect 为 'cube'，切换动画 speed 为 800 毫秒
+5) 只输出一段可直接粘贴的 JS，不要解释文字</pre>
+
+    <p class="wy-txt"><b>AI 第 2 版输出（终稿，已粘贴进本页）</b></p>
+    <pre class="wy-code">var qrw_swiper4Cfg = {
+  loop: true,
+  effect: 'cube',
+  speed: 800,
+  autoplay: { delay: 3200, disableOnInteraction: false },
+  pagination: { el: '#wyPag4', clickable: true }
+};
+var qrw_swiper4 = new Swiper('#wySw4', qrw_swiper4Cfg);</pre>
+
+    <table class="wy-table">
+      <tr><th>轮次</th><th>验证动作</th><th>结论</th></tr>
+      <tr><td>第 1 版</td><td>拖动一次后松手，观察是否继续自动翻页</td><td>❌ 不继续翻 —— 缺 disableOnInteraction: false</td></tr>
+      <tr><td>第 2 版</td><td>松手后等 3.2 秒；点第 3 个圆点；点 cube 看 3D 效果</td><td>✅ 自动继续、圆点可跳转、立方体生效</td></tr>
+    </table>
+
+    <details class="wy-qa">
+      <summary>答辩追问 ①：第一版提示词漏掉了哪个需求？（点击展开）</summary>
+      <p><b>Q：你的第一版提示词漏掉了哪个需求？</b></p>
+      <p class="wy-a">A：四个需求都"提了"，但只给了方向、没给验收标准：没写 3200ms 这个数值，没说"拖动后自动播放要继续"（disableOnInteraction: false），没说圆点要可点（clickable），也没指定分页器的具体元素 id 和动画时长。结果是 AI 只能按默认值猜。</p>
+      <p><b>Q：你是怎么在第二轮里"说清楚"的？</b></p>
+      <p class="wy-a">A：把模糊目标改写成可检查的约束——每条都写清 ① 配置项路径（如 autoplay.delay）② 具体取值 ③ 对应的页面元素 ④ 期望看到的现象；再追加"只输出代码"，避免解释文字里夹带错误信息。</p>
+      <p><b>Q：AI 第一次给的代码错在哪？</b></p>
+      <p class="wy-a">A：三处实质错误：autoplay 用数字简写导致拖动后停播；pagination 缺 clickable 导致圆点不可点；分页器选择器写类名而非 #wyPag4 会串台。另有两处"能用但不合要求"：延迟 3000≠3200、缺 speed: 800。</p>
+    </details>
+
+    <h3 class="wy-sub">任务二 · creative 仿写：课堂没讲，AI 教我</h3>
+    <p class="wy-txt">先读官方示例 <code>swiper/demo/257-effect-creative.html</code>：它只写了 <code>creativeEffect: { prev: { translate: [0,0,-400] }, next: { translate: ['100%',0,0] } }</code>。读懂的结论是——<b>creativeEffect 是一个"状态描述"对象</b>，prev 描述已退到左边那张的终态，next 描述还在右边等着进来那张的初始态，中间过程由 Swiper 按 translate / rotate / scale / opacity 自动插值。</p>
+
+    <p class="wy-txt"><b>我的"电影投影"参数（本页演示四的第 7 个按钮）</b></p>
+    <pre class="wy-code">creativeEffect: {
+  limitProgress: 2,                    // 前后各堆叠一层"胶片"
+  prev: {
+    translate: ['-42%', 0, -400],      // 左退 42%，z 轴再远离观众 400px
+    rotate: [0, 0, -10],               // 逆时针倾斜 10°
+    scale: 0.72,                       // 缩小到 72%
+    opacity: 0.38                      // 压暗，退到后景
+  },
+  next: {
+    translate: ['112%', 0, 140],       // 停在右侧屏外、且比屏幕更靠近观众
+    rotate: [0, 0, 9],                 // 顺时针倾斜 9°
+    scale: 1.18,                       // 放大到 118%
+    opacity: 0.3                       // 半透明
+  }
+}</pre>
+    <p class="wy-txt">上一张缩成小片、歪在左后方并压暗，像放映机后面垂着的旧胶片；下一张比正看着的那幅更大，从右侧斜着扑进来再落回正常尺寸，形成"投影打过来"的压迫感。</p>
+
+    <details class="wy-qa">
+      <summary>答辩追问 ②：prev / next 的 transform 各控制什么？（点击展开）</summary>
+      <p><b>prev —— 控制"刚被翻过去、退到左侧的那一张"的终态</b></p>
+      <p class="wy-a">translate: ['-42%', 0, -400] 让她 x 轴左移 42%、z 轴后退 400px（后退＝视觉变小变远）；rotate: [0,0,-10] 在屏幕平面内逆时针歪 10°；scale: 0.72 再缩小到 72%；opacity: 0.38 压暗，制造景深。</p>
+      <p><b>next —— 控制"还在右侧、尚未进场那一张"的初始态</b></p>
+      <p class="wy-a">translate: ['112%', 0, 140] 停在容器右侧之外，z 轴朝观众方向前进 140px；scale: 1.18 比当前图更大（这就是"放大"的来源）；rotate: [0,0,9] 带一点角度；opacity: 0.3 半透明。切换时从该状态插值回"居中、scale 1、opacity 1"，看起来就是放大右移着滑进来。</p>
+      <p><b>Q：transform 里的百分号是相对谁？</b></p>
+      <p class="wy-a">A：相对轮播容器（.swiper）自身尺寸，不是相对图片——translate 的 x 用容器宽度的百分比、y 用容器高度的百分比。所以容器改成响应式宽度时参数不用重算。</p>
+      <p><b>Q：改一个数值让下一张转 20 度？</b></p>
+      <p class="wy-a">A：改 next.rotate 的第三个数 → rotate: [0, 0, 20]。三个数分别绕 X / Y / Z 轴：X 轴上下翻转、Y 轴左右翻牌、Z 轴才是屏幕平面内打转。</p>
+    </details>
+
+    <h3 class="wy-sub">任务三 · 综合创作 + 技术答辩</h3>
+    <p class="wy-txt"><b>第六件展品：爱达·魔都号</b>　配图由 AI 生成，横版 16:9（2560×1440），保存为 <code>swiper-imgs/ada_modu.jpg</code>。提示词要点：国产大型邮轮、船坞港口黄昏、船身彩绘、低空三分之四视角、电影感纪实摄影、16:9、无文字。四个演示台都补齐了第六张，保证整套"光影展"完整：</p>
+    <pre class="wy-code">&lt;div class="swiper-slide"&gt;
+  &lt;img src="swiper-imgs/ada_modu.jpg" alt="爱达·魔都号"&gt;
+  &lt;div class="wy-cap"&gt;
+    &lt;h3&gt;爱达·魔都号&lt;/h3&gt;
+    &lt;p&gt;2024 年 1 月商业首航 · 首艘国产大型邮轮&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</pre>
+    <p class="wy-txt">只加 HTML 就够：<code>swiper-slide</code> 由 Swiper 自动计数，圆点分页器、loop、autoplay 都按实际张数重新计算，不需要改 JS。</p>
+
+    <p class="wy-txt"><b>加分能力：键盘控制（keyboard）</b></p>
+    <pre class="wy-code">keyboard: { enabled: true, onlyInViewport: true }</pre>
+    <p class="wy-txt"><code>enabled: true</code> 开启键盘控制，按 ← / → 切换；<code>onlyInViewport: true</code> 只在轮播进入视口时生效——本页有 4 个轮播，少了这一项会出现"按一次键 4 个轮播一起翻"。</p>
+
+    <details class="wy-qa">
+      <summary>答辩追问 ③：这段代码什么意思？AI 第一次给的不对在哪？（点击展开）</summary>
+      <p><b>Q：这段代码什么意思？</b></p>
+      <p class="wy-a">A：keyboard 是 Swiper 的键盘模块配置。enabled 打开键盘控制，左右方向键触发上/下一张；onlyInViewport 用可见性判断决定是否响应按键，避免多轮播页面同时被驱动。</p>
+      <p><b>Q：AI 第一次给的不对在哪？</b></p>
+      <p class="wy-a">A：它给的是 keyboard: true（Swiper 5 时代的布尔写法）。Swiper 8 之后该参数只接受对象，布尔值会被忽略——表现就是"写了但按键没反应"；而且没加 onlyInViewport，4 个轮播会同时响应同一个按键。</p>
+      <p><b>Q：新增的作用？</b></p>
+      <p class="wy-a">A：一是可访问性——不用鼠标也能翻页；二是体验——看大图时手不用在鼠标和方向键之间来回切换。</p>
+    </details>
   </div>
 
   <div class="wy-back"><a href="index.html">← 返回课堂实践中心</a>　<a href="swiper-lesson.html">查看教师讲解版 →</a></div>

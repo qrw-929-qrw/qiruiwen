@@ -91,7 +91,7 @@
     <h1>Swiper 轮播组件 · <b>大国重器光影展（学生版）</b></h1>
     <p>HTML 骨架和 CSS 样式已经全部搭好，图片也备齐了——但这个页面的轮播<b>一个都不会动</b>！
     因为所有 <b>&lt;script&gt; 里的 JS 初始化代码都被抽走了</b>。你的任务：把 4 个轮播全部"救活"。</p>
-    <div class="wy-goals"><i>任务 1 · 救活最小轮播</i><i>任务 2 · 装上圆点和箭头</i><i>任务 3 · 让它自己翻页</i><i>任务 4 · 六种效果随心换</i></div>
+    <div class="wy-goals"><i>任务 1 · 救活最小轮播</i><i>任务 2 · 装上圆点和箭头</i><i>任务 3 · 让它自己翻页</i><i>任务 4 · 七种效果随心换</i></div>
   </div>
 
   <div class="wy-rule">
@@ -124,6 +124,7 @@
             <div class="swiper-slide"><img src="swiper-imgs/c919_1.jpg" alt="C919大飞机"><div class="wy-cap"><h3>C919 大飞机</h3><p>2023 年商业首航 · 国产干线客机翱翔蓝天</p></div></div>
             <div class="swiper-slide"><img src="swiper-imgs/fendouzhe_1.jpg" alt="奋斗者号"><div class="wy-cap"><h3>奋斗者号</h3><p>10909 米 · 触碰地球第四极马里亚纳海沟</p></div></div>
             <div class="swiper-slide"><img src="swiper-imgs/fast_1.jpg" alt="中国天眼"><div class="wy-cap"><h3>中国天眼 FAST</h3><p>500 米口径 · 世界最大单口径射电望远镜</p></div></div>
+            <div class="swiper-slide"><img src="swiper-imgs/ada_modu.jpg" alt="爱达·魔都号"><div class="wy-cap"><h3>爱达·魔都号</h3><p>2024 年 1 月商业首航 · 首艘国产大型邮轮</p></div></div>
           </div>
         </div>
       </div>
@@ -152,6 +153,7 @@
             <div class="swiper-slide"><img src="swiper-imgs/c919_1.jpg" alt="C919大飞机"><div class="wy-cap"><h3>C919 大飞机</h3><p>让中国人的大飞机梦照进现实</p></div></div>
             <div class="swiper-slide"><img src="swiper-imgs/fendouzhe_1.jpg" alt="奋斗者号"><div class="wy-cap"><h3>奋斗者号</h3><p>坐底万米 · 深海探测进入"中国时代"</p></div></div>
             <div class="swiper-slide"><img src="swiper-imgs/fast_1.jpg" alt="中国天眼"><div class="wy-cap"><h3>中国天眼 FAST</h3><p>南仁东先生 22 年铸就的观天巨目</p></div></div>
+            <div class="swiper-slide"><img src="swiper-imgs/ada_modu.jpg" alt="爱达·魔都号"><div class="wy-cap"><h3>爱达·魔都号</h3><p>13.55 万吨 · 中国造船业"三颗明珠"的最后一块拼图</p></div></div>
           </div>
           <div class="swiper-pagination" id="wyPag2"></div>
           <div class="swiper-button-prev" id="wyPrev2"></div>
@@ -183,6 +185,7 @@
             <div class="swiper-slide"><img src="swiper-imgs/c919_1.jpg" alt="C919大飞机"><div class="wy-cap"><h3>C919 大飞机</h3><p>蓝天之上 · 大国担当</p></div></div>
             <div class="swiper-slide"><img src="swiper-imgs/fendouzhe_1.jpg" alt="奋斗者号"><div class="wy-cap"><h3>奋斗者号</h3><p>万米深潜 · 无畏探索</p></div></div>
             <div class="swiper-slide"><img src="swiper-imgs/fast_1.jpg" alt="中国天眼"><div class="wy-cap"><h3>中国天眼 FAST</h3><p>仰望星空 · 脚踏实地</p></div></div>
+            <div class="swiper-slide"><img src="swiper-imgs/ada_modu.jpg" alt="爱达·魔都号"><div class="wy-cap"><h3>爱达·魔都号</h3><p>上海母港出发 · 一座驶向深蓝的"移动城市"</p></div></div>
           </div>
           <div class="swiper-pagination" id="wyPag3"></div>
         </div>
@@ -194,13 +197,14 @@
   <div class="wy-sec">
     <div class="wy-sec-head">
       <span class="wy-no">4</span>
-      <h2>六种效果随心换<small>effect 参数 + 进阶：按钮实时切换</small></h2>
+      <h2>七种效果随心换<small>effect 参数 + 进阶：按钮实时切换</small></h2>
     </div>
-    <p class="wy-txt">改一个 <code>effect</code> 参数，轮播立刻换一种"性格"：slide / fade / cube / coverflow / flip / cards。上面的 6 个按钮已经绑好了点击事件（读取 <code>btn.dataset.fx</code>），JS 还需要你补两段。</p>
+    <p class="wy-txt">改一个 <code>effect</code> 参数，轮播立刻换一种"性格"：slide / fade / cube / coverflow / flip / cards，再加上课堂没讲的第 7 种 <code>creative</code>（自定义变换）。上面的 7 个按钮已经绑好了点击事件（读取 <code>btn.dataset.fx</code>），JS 还需要你补两段。</p>
     <div class="wy-req">
       <h3>✍️ 任务 4 要求</h3>
       <p><b>基础分</b>：初始化 <code>#wySw4</code>，实现循环 + 自动播放（3.2 秒）+ 圆点分页器（#wyPag4），初始效果为 <code>'slide'</code>，动画时长 800 毫秒。</p>
       <p><b>进阶分</b>：补全按钮点击事件中的 TODO——实现点击按钮<b>切换效果</b>。提示：Swiper 动态换 effect 不能只改参数，需要<b>先销毁旧实例再重建</b>（destroy + new）。</p>
+      <p><b>本次新增（任务二 / 任务三）</b>：① 第 7 种效果 <code>creative</code>——上一张缩小、左移并带角度，下一张放大右移，做出"电影投影"感；② 给演示四加上课堂上没讲的 <code>keyboard</code> 键盘控制（轮播在视口内时 ←/→ 可切换）。</p>
       <span class="wy-star">⭐ 验证标准：基础分——轮播自动翻页；进阶分——点 cube 按钮变 3D 立方体、点 fade 变淡入淡出</span>
     </div>
     <div class="wy-fx">
@@ -210,6 +214,7 @@
       <button data-fx="coverflow">coverflow 画廊堆叠（沉浸）</button>
       <button data-fx="flip">flip 翻页（复古）</button>
       <button data-fx="cards">cards 卡片（俏皮）</button>
+      <button data-fx="creative">creative 电影投影（新增·第七种）</button>
     </div>
     <div class="wy-demo">
       <span class="wy-demo-tag">🎛️ 演示四 · 效果实验台（点按钮切换 effect）</span>
@@ -217,10 +222,11 @@
         <div class="swiper" id="wySw4">
           <div class="swiper-wrapper">
             <div class="swiper-slide"><img src="swiper-imgs/tiangong_1.jpg" alt="天宫空间站"><div class="wy-cap"><h3>天宫空间站</h3><p>试试上面的效果按钮</p></div></div>
-            <div class="swiper-slide"><img src="swiper-imgs/fuxing_1.jpg" alt="复兴号动车组"><div class="wy-cap"><h3>复兴号动车组</h3><p>同一组照片，六种讲述方式</p></div></div>
+            <div class="swiper-slide"><img src="swiper-imgs/fuxing_1.jpg" alt="复兴号动车组"><div class="wy-cap"><h3>复兴号动车组</h3><p>同一组照片，七种讲述方式</p></div></div>
             <div class="swiper-slide"><img src="swiper-imgs/c919_1.jpg" alt="C919大飞机"><div class="wy-cap"><h3>C919 大飞机</h3><p>企业官网爱用 fade</p></div></div>
             <div class="swiper-slide"><img src="swiper-imgs/fendouzhe_1.jpg" alt="奋斗者号"><div class="wy-cap"><h3>奋斗者号</h3><p>游戏网站爱用 cube</p></div></div>
             <div class="swiper-slide"><img src="swiper-imgs/fast_1.jpg" alt="中国天眼"><div class="wy-cap"><h3>中国天眼 FAST</h3><p>相册页面爱用 coverflow</p></div></div>
+            <div class="swiper-slide"><img src="swiper-imgs/ada_modu.jpg" alt="爱达·魔都号"><div class="wy-cap"><h3>爱达·魔都号</h3><p>第六件展品 · 配图为 AI 生成（横版 16:9）</p></div></div>
           </div>
           <div class="swiper-pagination" id="wyPag4"></div>
         </div>
@@ -276,12 +282,30 @@ var mySw33 = new Swiper('#wySw3', {
     effect: 'slide',                         // 初始效果：平推
     speed: 800,                              // 切换动画 800 毫秒
     autoplay: { delay: 3200, disableOnInteraction: false }, // 每 3.2 秒自动翻页，手动操作后不停
-    pagination: { el: '#wyPag4', clickable: true }          // 圆点分页器可点击
+    pagination: { el: '#wyPag4', clickable: true },         // 圆点分页器可点击
+    // 戚瑞雯：任务三加分项——keyboard 键盘控制，轮播在视口内时可用左右方向键切换
+    keyboard: { enabled: true, onlyInViewport: true },
+    // 戚瑞雯：第 7 种效果 creative 的参数——做成"电影投影"：上一张缩小左移带角度，下一张放大右移入场
+    creativeEffect: {
+      limitProgress: 2,                      // 允许两级堆叠，前后各留一张"胶片"
+      prev: {
+        translate: ['-42%', 0, -400],        // 向左退 42%，同时沿 z 轴远离观众 400px
+        rotate: [0, 0, -10],                 // 逆时针倾斜 10°，像投影幕斜置
+        scale: 0.72,                         // 缩小到 72%
+        opacity: 0.38                        // 变暗，退到后景
+      },
+      next: {
+        translate: ['112%', 0, 140],         // 从右侧更靠近观众的位置进入
+        rotate: [0, 0, 9],                   // 顺时针倾斜 9°
+        scale: 1.18,                         // 放大到 118%，有"扑面而来"的压迫感
+        opacity: 0.3                         // 入场前半透明
+      }
+    }
   };
   // 函数功能：用上面的公共配置初始化演示四的轮播实例
   var qrw_swiper4 = new Swiper('#wySw4', qrw_swiper4Cfg);
 
-  // ── 任务 4 进阶：补全按钮点击事件，实现六种效果实时切换 ──
+  // ── 任务 4 进阶：补全按钮点击事件，实现七种效果实时切换 ──
   // 提示 1：动态换 effect 只改参数是无效的，必须销毁旧实例再重建（destroy + new）
   // 提示 2：按钮上已有 data-fx 属性，用 btn.dataset.fx 读取要切换的效果名
   document.querySelectorAll('.wy-fx button').forEach(function(qrw_btn){

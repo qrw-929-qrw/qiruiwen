@@ -68,14 +68,21 @@
   .qrw_tools button:active{transform:scale(.97);border-color:var(--qrw_red);color:var(--qrw_red)}
   .qrw_hint{margin-top:10px;font-size:12.5px;color:var(--qrw_muted)}
 
-  /* 演示录像 */
+  /* 演示录像：竖屏录屏，尽量给足可视面积——手机端左右出血到屏幕边缘，桌面端放宽到 720px */
   .qrw_clip{margin-top:26px;padding-top:18px;border-top:1px solid var(--qrw_line)}
   .qrw_clip h3{font-size:14px;letter-spacing:.14em;color:var(--qrw_muted);font-weight:600}
   .qrw_video{
-    display:block;width:100%;margin-top:10px;border-radius:16px;background:#000;
+    display:block;background:#000;object-fit:contain;
+    width:100vw;max-height:84vh;
+    margin:12px 0 0 calc(50% - 50vw);
     box-shadow:0 10px 26px rgba(22,24,29,.16);
   }
   .qrw_caption{margin-top:8px;font-size:12.5px;color:var(--qrw_muted)}
+  @media (min-width:640px){
+    .qrw_video{
+      width:100%;max-width:720px;margin:12px auto 0;border-radius:18px;
+    }
+  }
 
   .qrw_notes{margin-top:28px;padding-top:18px;border-top:1px solid var(--qrw_line)}
   .qrw_notes h3{font-size:14px;letter-spacing:.14em;color:var(--qrw_muted);font-weight:600}

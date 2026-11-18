@@ -152,13 +152,13 @@
       <li>传感器事件不是所有环境都有：电脑浏览器、部分安卓机、被系统关掉权限的设备都收不到 <code>devicemotion</code>；不降级就是一块永远不动的白板。</li>
       <li>iOS 13+ 必须在<b>用户手势里</b>调用 <code>DeviceMotionEvent.requestPermission()</code>，所以页面上保留"授权读取加速度"按钮，拒绝授权也还有"点我抽一次"可用。</li>
       <li><code>accelerationIncludingGravity</code> 含重力（静止时约为 9.8），<code>acceleration</code> 不含重力（静止时接近 0）。摇动用前者更稳，判断"倾斜角度"则要靠后者或重力分量。</li>
-      <li>阈值取 18：一次摇动的合成加速度会明显超过它，而走路、放口袋里的轻微晃动不会误触发。</li>
-      <li>触发后进入 1.5 秒冷却——一次摇动会连续产生几十个 <code>devicemotion</code> 事件，没有冷却就会瞬间抽十几次。</li>
+      <li>判摇动不看"加速度有多大"，而看"变化有多快"：把相邻两次采样的三轴差值相加、除以时间间隔，静止时接近 0，快速甩动能到几千，阈值取 600 就很好区分走路和摇一摇。</li>
+      <li>触发后进入 1.2 秒冷却——一次摇动会连续产生几十个 <code>devicemotion</code> 事件，没有冷却就会瞬间抽十几次。</li>
     </ol>
   </section>
 
   <footer class="qrw_foot">
-    <p><a href="webqrw/index.html">← 返回课堂实践目录首页</a></p>
+    <p><a href="index.html">← 返回课堂实践目录首页</a></p>
     <p><a href="mobile-gesture.html">← 回到第一关</a></p>
   </footer>
 </div>
@@ -175,13 +175,19 @@
   var qrw_btnPerm = document.getElementById("qrw_btnPerm");
   var qrw_btnDraw = document.getElementById("qrw_btnDraw");
 
-  var qrw_THRESHOLD = 18;      // 合成加速度阈值
-  var qrw_COOLDOWN = 1500;     // 一次摇动后的冷却时间
+  var qrw_SPEED_THRESHOLD = 600;  // 摇动强度阈值：静止接近 0，快速甩动会到几千
+  var qrw_COOLDOWN = 1200;        // 一次摇动后的冷却时间
+  var qrw_SPEED_INTERVAL = 60;    // 采样间隔，短于它就等下一个样本再算，避免除以极小的 dt
   var qrw_lastShake = 0;
   var qrw_listening = false;
   var qrw_gotEvent = false;
   var qrw_watchdog = null;
   var qrw_lastIndex = -1;
+  var qrw_lastX = 0;
+  var qrw_lastY = 0;
+  var qrw_lastZ = 0;
+  var qrw_lastTime = 0;
+  var qrw_peak = 0;
 
   var qrw_dishes = [
     { "emoji": "🦆", "name": "北京烤鸭", "desc": "片皮蘸糖，卷饼配葱丝" },
@@ -224,7 +230,7 @@
     qrw_setStatus(qrw_source === "shake" ? "摇到了！停下再摇一次" : "已抽到，摇一摇还能换", "live");
   }
 
-  // 函数功能：读取 accelerationIncludingGravity 算合成加速度，超过阈值且不在冷却期内就抽一次
+  // 函数功能：用相邻两次采样的三轴差值算"摇动强度"（变化量之和 ÷ 时间间隔），超过阈值且不在冷却期就抽一次
   function qrw_onMotion(qrw_e) {
     if (!qrw_gotEvent) {
       qrw_gotEvent = true;
@@ -232,40 +238,70 @@
       qrw_setStatus("监听中，摇一摇手机试试", "live");
     }
 
-    var qrw_acc = qrw_e.accelerationIncludingGravity;
-    if (!qrw_acc) {
-      qrw_rawEl.textContent = "该浏览器不提供 accelerationIncludingGravity";
+    // 优先用含重力的原始值：重力在两次采样的差值里会被抵消，兼容性也最好
+    var qrw_acc = qrw_e.accelerationIncludingGravity || qrw_e.acceleration;
+    if (!qrw_acc || qrw_acc.x === null) {
+      qrw_rawEl.textContent = "这个浏览器没有给出加速度数值";
       return;
     }
 
+    var qrw_now = Date.now();
     var qrw_x = qrw_acc.x || 0;
     var qrw_y = qrw_acc.y || 0;
     var qrw_z = qrw_acc.z || 0;
-    var qrw_magnitude = Math.sqrt(qrw_x * qrw_x + qrw_y * qrw_y + qrw_z * qrw_z);
 
-    qrw_rawEl.textContent = "实时加速度：" + qrw_magnitude.toFixed(1) + " / 阈值 " + qrw_THRESHOLD;
-    qrw_rawEl.className = qrw_magnitude >= qrw_THRESHOLD ? "qrw_raw qrw_hot" : "qrw_raw";
+    // 第一次采样只打基准点
+    if (!qrw_lastTime) {
+      qrw_lastTime = qrw_now;
+      qrw_lastX = qrw_x;
+      qrw_lastY = qrw_y;
+      qrw_lastZ = qrw_z;
+      return;
+    }
 
-    if (qrw_magnitude < qrw_THRESHOLD) return;
+    // 两次间隔太短先不计算，等累积到 60 毫秒以上再比，避免除以极小的 dt 得到虚高数值
+    if (qrw_now - qrw_lastTime < qrw_SPEED_INTERVAL) return;
+
+    var qrw_dt = qrw_now - qrw_lastTime;
+    var qrw_dx = qrw_x - qrw_lastX;
+    var qrw_dy = qrw_y - qrw_lastY;
+    var qrw_dz = qrw_z - qrw_lastZ;
+
+    qrw_lastTime = qrw_now;
+    qrw_lastX = qrw_x;
+    qrw_lastY = qrw_y;
+    qrw_lastZ = qrw_z;
+
+    var qrw_speed = Math.abs(qrw_dx + qrw_dy + qrw_dz) / qrw_dt * 1000;
+
+    if (qrw_speed > qrw_peak) qrw_peak = qrw_speed;
+    qrw_rawEl.textContent = "摇动强度 " + Math.round(qrw_speed) + " / 阈值 " + qrw_SPEED_THRESHOLD +
+      "（本次最高 " + Math.round(qrw_peak) + "）";
+    qrw_rawEl.className = qrw_speed >= qrw_SPEED_THRESHOLD ? "qrw_raw qrw_hot" : "qrw_raw";
+
+    if (qrw_speed < qrw_SPEED_THRESHOLD) return;
 
     // 冷却期内忽略，一次摇动只出一次结果
-    if (Date.now() - qrw_lastShake < qrw_COOLDOWN) return;
+    if (qrw_now - qrw_lastShake < qrw_COOLDOWN) return;
 
-    qrw_lastShake = Date.now();
+    qrw_lastShake = qrw_now;
+    qrw_peak = 0;
     qrw_draw("shake");
   }
 
-  // 函数功能：挂上 devicemotion 监听，并设 3 秒看门狗——一直收不到数据就提示设备不支持
+  // 函数功能：挂上 devicemotion 监听，并设 3 秒看门狗——一直收不到数据就提示是环境问题
   function qrw_startListen() {
     if (qrw_listening) return;
     qrw_listening = true;
     qrw_gotEvent = false;
+    qrw_lastTime = 0;
+    qrw_peak = 0;
     window.addEventListener("devicemotion", qrw_onMotion);
     qrw_setStatus("正在等待传感器数据…", "");
 
     qrw_watchdog = setTimeout(function () {
       if (qrw_gotEvent) return;
-      qrw_setStatus("没有收到加速度数据，当前设备可能不支持，请用手机打开", "bad");
+      qrw_setStatus("收不到加速度数据：请确认用 https 访问、在系统浏览器而不是微信里打开", "bad");
       qrw_btnDraw.classList.add("qrw_primary");
     }, 3000);
   }

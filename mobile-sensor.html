@@ -74,6 +74,13 @@
     100%{transform:scale(1)}
   }
 
+  /* 实时加速度读数：摇不动时用它自检——数字一直不变说明根本没收到传感器事件 */
+  .qrw_raw{
+    position:relative;margin-top:10px;font-family:"SF Mono",Consolas,monospace;
+    font-size:11.5px;letter-spacing:.04em;color:rgba(246,243,234,.5);
+  }
+  .qrw_raw.qrw_hot{color:#f0a97f}
+
   /* 状态与按钮 */
   .qrw_status{
     margin-top:16px;display:flex;align-items:center;justify-content:center;gap:8px;
@@ -125,6 +132,7 @@
     <span class="qrw_emu" id="qrw_emu">🍽️</span>
     <p class="qrw_dish" id="qrw_dish">摇一摇手机</p>
     <p class="qrw_desc" id="qrw_desc">今天吃什么，交给加速度传感器决定</p>
+    <p class="qrw_raw" id="qrw_raw">实时加速度：—</p>
     <span class="qrw_seal" id="qrw_seal">今日</span>
   </section>
 
@@ -150,7 +158,7 @@
   </section>
 
   <footer class="qrw_foot">
-    <p><a href="index.html">← 返回课堂实践目录首页</a></p>
+    <p><a href="webqrw/index.html">← 返回课堂实践目录首页</a></p>
     <p><a href="mobile-gesture.html">← 回到第一关</a></p>
   </footer>
 </div>
@@ -162,6 +170,7 @@
   var qrw_descEl = document.getElementById("qrw_desc");
   var qrw_seal = document.getElementById("qrw_seal");
   var qrw_statusEl = document.getElementById("qrw_status");
+  var qrw_rawEl = document.getElementById("qrw_raw");
   var qrw_dot = document.getElementById("qrw_dot");
   var qrw_btnPerm = document.getElementById("qrw_btnPerm");
   var qrw_btnDraw = document.getElementById("qrw_btnDraw");
@@ -224,12 +233,18 @@
     }
 
     var qrw_acc = qrw_e.accelerationIncludingGravity;
-    if (!qrw_acc) return;
+    if (!qrw_acc) {
+      qrw_rawEl.textContent = "该浏览器不提供 accelerationIncludingGravity";
+      return;
+    }
 
     var qrw_x = qrw_acc.x || 0;
     var qrw_y = qrw_acc.y || 0;
     var qrw_z = qrw_acc.z || 0;
     var qrw_magnitude = Math.sqrt(qrw_x * qrw_x + qrw_y * qrw_y + qrw_z * qrw_z);
+
+    qrw_rawEl.textContent = "实时加速度：" + qrw_magnitude.toFixed(1) + " / 阈值 " + qrw_THRESHOLD;
+    qrw_rawEl.className = qrw_magnitude >= qrw_THRESHOLD ? "qrw_raw qrw_hot" : "qrw_raw";
 
     if (qrw_magnitude < qrw_THRESHOLD) return;
 

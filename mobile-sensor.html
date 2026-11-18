@@ -102,6 +102,15 @@
   .qrw_actions button.qrw_primary{background:var(--qrw_ink);color:#f7f4ec}
   .qrw_actions button[hidden]{display:none}
 
+  /* 演示录像 */
+  .qrw_clip{margin-top:26px;padding-top:18px;border-top:1px solid var(--qrw_line)}
+  .qrw_clip h3{font-size:14px;letter-spacing:.14em;color:var(--qrw_muted);font-weight:600}
+  .qrw_video{
+    display:block;width:100%;margin-top:10px;border-radius:16px;background:#000;
+    box-shadow:0 10px 26px rgba(22,24,29,.16);
+  }
+  .qrw_caption{margin-top:8px;font-size:12.5px;color:var(--qrw_muted)}
+
   .qrw_notes{margin-top:28px;padding-top:18px;border-top:1px solid var(--qrw_line)}
   .qrw_notes h3{font-size:14px;letter-spacing:.14em;color:var(--qrw_muted);font-weight:600}
   .qrw_notes ol{margin:10px 0 0 18px;font-size:13.5px;color:#33352f}
@@ -145,6 +154,12 @@
     <button type="button" class="qrw_primary" id="qrw_btnPerm" hidden>授权读取加速度</button>
     <button type="button" id="qrw_btnDraw">点我抽一次</button>
   </div>
+
+  <section class="qrw_clip">
+    <h3>现场演示</h3>
+    <video class="qrw_video" src="mobile-imgs/shake-demo.mp4" controls playsinline preload="metadata"></video>
+    <p class="qrw_caption">手机上摇一摇 → 结果牌换菜 → 印章亮起，整个过程录屏。</p>
+  </section>
 
   <section class="qrw_notes">
     <h3>为什么必须做降级</h3>

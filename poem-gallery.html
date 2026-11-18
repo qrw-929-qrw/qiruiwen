@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<!--
+  作者：戚瑞雯
+  创建时间：2026-11-13
+  使用大模型：DeepSeek-V4.1-Flash
+  功能名称：诗词图文页——从本地 3004 端口服务器读取 db.json 的 poems，按上图下文排版
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>诗页 · 上图下文</title>
+<style>
+  /* 设计方向：纸页感——米白纸面、墨色正文、印章红作唯一点缀，细线与大量留白，不用卡片阴影 */
+  :root{
+    --qrw_paper:#f3f2ec;
+    --qrw_ink:#1a1a17;
+    --qrw_ink_soft:#6f6d64;
+    --qrw_rule:#d6d2c4;
+    --qrw_seal:#a8322a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--qrw_paper);
+    color:var(--qrw_ink);
+    font-family:"Songti SC","Noto Serif SC",Georgia,serif;
+    line-height:1.9;
+    padding:0 22px 72px;
+  }
+  .qrw_page{max-width:720px;margin:0 auto}
+
+  /* 页眉 */
+  .qrw_head{padding:56px 0 22px;border-bottom:2px solid var(--qrw_ink)}
+  .qrw_head .qrw_eyebrow{
+    font-family:"PingFang SC","Hiragino Sans GB",sans-serif;
+    font-size:12px;letter-spacing:.2em;color:var(--qrw_ink_soft);
+    display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:22px;
+  }
+  .qrw_head h1{font-size:clamp(30px,6vw,46px);font-weight:700;letter-spacing:.04em;line-height:1.25}
+  .qrw_head p{
+    font-family:"PingFang SC","Hiragino Sans GB",sans-serif;
+    margin-top:16px;font-size:14px;color:var(--qrw_ink_soft);max-width:52ch;
+  }
+
+  /* 每条：上图为大，下文为注 */
+  .qrw_item{padding:44px 0 38px;border-bottom:1px solid var(--qrw_rule)}
+  .qrw_item:last-of-type{border-bottom:none}
+  .qrw_figure{position:relative;overflow:hidden;background:#e3e0d6}
+  .qrw_figure img{
+    display:block;width:100%;aspect-ratio:3/2;object-fit:cover;
+    transition:transform .7s ease;
+  }
+  .qrw_item:hover .qrw_figure img{transform:scale(1.02)}
+  .qrw_figure .qrw_seal{
+    position:absolute;top:14px;left:14px;
+    width:38px;height:38px;background:var(--qrw_seal);color:#f7f4ec;
+    display:grid;place-items:center;
+    font-family:"PingFang SC",sans-serif;font-size:15px;font-weight:600;
+    letter-spacing:0;
+  }
+  .qrw_text{padding-top:22px}
+  .qrw_text h2{font-size:26px;font-weight:700;letter-spacing:.06em;line-height:1.4}
+  .qrw_text .qrw_from{
+    font-family:"PingFang SC","Hiragino Sans GB",sans-serif;
+    margin-top:4px;font-size:12px;letter-spacing:.16em;color:var(--qrw_ink_soft);
+    text-transform:none;
+  }
+  .qrw_text .qrw_line{
+    margin-top:14px;font-size:17px;letter-spacing:.05em;color:#2a2a25;
+  }
+
+  /* 诗人名录：与诗词共用一次请求批次，横排小字放在页眉下方 */
+  .qrw_authors{
+    display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 18px;
+    margin-top:22px;padding-top:14px;border-top:1px solid var(--qrw_rule);
+    font-family:"PingFang SC","Hiragino Sans GB",sans-serif;
+    font-size:12.5px;color:var(--qrw_ink_soft);
+  }
+  .qrw_authors .qrw_label{letter-spacing:.2em;color:var(--qrw_ink)}
+  .qrw_authors_list{display:flex;flex-wrap:wrap;gap:8px 18px}
+
+  /* 工具条：搜索框、排序按钮与结果计数，只用细线收边 */
+  .qrw_bar{
+    display:flex;flex-wrap:wrap;align-items:center;gap:12px;
+    padding:18px 0;border-bottom:2px solid var(--qrw_ink);
+    font-family:"PingFang SC","Hiragino Sans GB",sans-serif;
+  }
+  .qrw_search{
+    flex:1 1 220px;display:flex;align-items:center;min-height:42px;
+    padding:0 12px;background:#faf9f4;border:1px solid var(--qrw_ink);
+    transition:border-color .2s ease;
+  }
+  .qrw_search:focus-within{border-color:var(--qrw_seal)}
+  .qrw_search input{
+    flex:1;min-width:0;border:none;outline:none;background:transparent;
+    font:inherit;font-size:14px;color:var(--qrw_ink);
+  }
+  .qrw_search input::placeholder{color:#a3a096;letter-spacing:.04em}
+  .qrw_sort{
+    min-height:42px;padding:0 16px;cursor:pointer;
+    font:inherit;font-size:13.5px;letter-spacing:.04em;
+    color:var(--qrw_ink);background:transparent;border:1px solid var(--qrw_ink);
+    transition:background .2s ease,color .2s ease,border-color .2s ease;
+  }
+  .qrw_sort:hover{background:var(--qrw_ink);color:#f7f4ec}
+  .qrw_sort.qrw_on{background:var(--qrw_seal);border-color:var(--qrw_seal);color:#f7f4ec}
+  .qrw_count{margin-left:auto;font-size:12.5px;color:var(--qrw_ink_soft);letter-spacing:.06em}
+
+  /* 状态提示 */
+  .qrw_state{
+    font-family:"PingFang SC","Hiragino Sans GB",sans-serif;
+    padding:70px 0;text-align:center;color:var(--qrw_ink_soft);font-size:14px;
+  }
+  .qrw_state code{
+    font-family:"SF Mono",Consolas,monospace;font-size:12.5px;
+    background:#e7e4d9;padding:2px 6px;color:var(--qrw_ink);
+  }
+  .qrw_state b{color:var(--qrw_seal);font-weight:600;display:block;margin-bottom:8px}
+
+  /* 页脚 */
+  .qrw_foot{
+    margin-top:40px;padding-top:18px;border-top:2px solid var(--qrw_ink);
+    display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
+    font-family:"PingFang SC","Hiragino Sans GB",sans-serif;font-size:13px;color:var(--qrw_ink_soft);
+  }
+  .qrw_foot a{color:var(--qrw_ink);text-decoration:none;border-bottom:1px solid var(--qrw_ink)}
+  .qrw_foot a:hover{color:var(--qrw_seal);border-color:var(--qrw_seal)}
+
+  @media (max-width:560px){
+    .qrw_head{padding-top:36px}
+    .qrw_item{padding:32px 0 28px}
+    .qrw_text h2{font-size:22px}
+    .qrw_text .qrw_line{font-size:16px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none !important}
+  }
+</style>
+</head>
+<body>
+<div class="qrw_page">
+
+  <header class="qrw_head">
+    <p class="qrw_eyebrow">
+      <span>诗页 · 第一辑</span>
+      <span>数据来源：/api/poems + /api/authors</span>
+    </p>
+    <h1>诗句落在图片下面</h1>
+    <p>上图下文，是这个页面唯一的排版规则。图片先给出景，标题与诗句再补上话；每一则之间只用一条细线隔开。</p>
+
+    <section class="qrw_authors" aria-label="诗人名录">
+      <p class="qrw_label">诗人名录</p>
+      <div class="qrw_authors_list" id="qrw_authorList">
+        <span>正在取诗人数据…</span>
+      </div>
+    </section>
+  </header>
+
+  <section class="qrw_bar" aria-label="诗词检索工具">
+    <label class="qrw_search">
+      <input type="search" id="qrw_searchInput" placeholder="搜索标题或诗句关键字…" autocomplete="off">
+    </label>
+    <button type="button" class="qrw_sort" id="qrw_sortBtn">按标题长度排序</button>
+    <p class="qrw_count" id="qrw_count">正在取数据…</p>
+  </section>
+
+  <main id="qrw_poemList">
+    <div class="qrw_state">正在从服务器取数据…</div>
+  </main>
+
+  <footer class="qrw_foot">
+    <p><a href="index.html">← 返回课堂实践目录首页</a></p>
+    <p>数据服务器：<code>node db/server.js</code></p>
+  </footer>
+</div>
+
+<script>
+  // 戚瑞雯：数据来自本机 3004 端口的 Express 服务，接口为 /api/poems 与 /api/authors
+  var qrw_list = document.getElementById("qrw_poemList");
+
+  // 函数功能：把中文数字序号转成印章上的字（1→壹 … 10→拾），超出范围直接返回原数字
+  function qrw_sealNum(qrw_n) {
+    var qrw_map = ["壹", "贰", "叁", "肆", "伍", "陆", "柒", "捌", "玖", "拾"];
+    return qrw_n <= 10 ? qrw_map[qrw_n - 1] : String(qrw_n);
+  }
+
+  // 函数功能：外部图片失效时，用一张内联 SVG 占位图替换，保证"上图下文"的结构不塌
+  function qrw_usePlaceholder(qrw_img, qrw_title) {
+    var qrw_svg =
+      '<svg xmlns="http://www.w3.org/2000/svg" width="900" height="600">' +
+      '<rect width="900" height="600" fill="#e3e0d6"/>' +
+      '<text x="450" y="290" font-size="34" fill="#6f6d64" text-anchor="middle" font-family="Songti SC,serif">' +
+      (qrw_title || "无题") + '</text>' +
+      '<text x="450" y="336" font-size="18" fill="#9a978c" text-anchor="middle" font-family="PingFang SC,sans-serif">配图地址当前不可访问</text>' +
+      "</svg>";
+    qrw_img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(qrw_svg);
+  }
+
+  // 函数功能：把 db.json 里的图片地址转成可用的 src —— 远程地址交给本机 3004 端口的图片代理，本地相对路径原样使用
+  function qrw_imgSrc(qrw_pic) {
+    if (!qrw_pic) return "";
+    if (qrw_pic.indexOf("http://") === 0 || qrw_pic.indexOf("https://") === 0) {
+      return "/api/img?u=" + encodeURIComponent(qrw_pic);
+    }
+    return qrw_pic;
+  }
+
+  // 函数功能：把一首诗的图片、标题、正文装进"上图下文"的结构，返回整段 DOM
+  function qrw_buildItem(qrw_poem, qrw_index) {
+    var qrw_item = document.createElement("article");
+    qrw_item.className = "qrw_item";
+
+    // 上半部分：图片 + 角上的序号印章
+    var qrw_figure = document.createElement("div");
+    qrw_figure.className = "qrw_figure";
+
+    var qrw_img = document.createElement("img");
+    qrw_img.alt = qrw_poem.title || "诗词配图";
+
+    // 先挂 error 监听再赋 src，确保失败一定能被捕获；只兜底一次，避免占位图再次触发死循环
+    qrw_img.addEventListener("error", function () {
+      qrw_usePlaceholder(qrw_img, qrw_poem.title);
+    }, { once: true });
+
+    qrw_img.src = qrw_imgSrc(qrw_poem.pic);
+
+    var qrw_seal = document.createElement("span");
+    qrw_seal.className = "qrw_seal";
+    qrw_seal.textContent = qrw_sealNum(qrw_index + 1);
+
+    qrw_figure.appendChild(qrw_img);
+    qrw_figure.appendChild(qrw_seal);
+
+    // 下半部分：标题 + 出处 + 诗句
+    var qrw_text = document.createElement("div");
+    qrw_text.className = "qrw_text";
+
+    var qrw_title = document.createElement("h2");
+    qrw_title.textContent = qrw_poem.title || "无题";
+
+    var qrw_from = document.createElement("p");
+    qrw_from.className = "qrw_from";
+    qrw_from.textContent =
+      "第 " + (qrw_index + 1) + " 则 · 共 " + qrw_total + " 则" +
+      (qrw_poem.author ? " · " + qrw_poem.author : "");
+
+    var qrw_line = document.createElement("p");
+    qrw_line.className = "qrw_line";
+    qrw_line.textContent = qrw_poem.content || "";
+
+    qrw_text.appendChild(qrw_title);
+    qrw_text.appendChild(qrw_from);
+    qrw_text.appendChild(qrw_line);
+
+    qrw_item.appendChild(qrw_figure);
+    qrw_item.appendChild(qrw_text);
+    return qrw_item;
+  }
+
+  var qrw_total = 0;          // 接口返回的诗词总条数
+  var qrw_poemsAll = [];      // 原始顺序的数据，搜索与排序都在这份缓存上做
+  var qrw_keyword = "";       // 当前搜索关键字
+  var qrw_sorted = false;     // 是否按标题长度升序
+
+  var qrw_searchInput = document.getElementById("qrw_searchInput");
+  var qrw_sortBtn = document.getElementById("qrw_sortBtn");
+  var qrw_count = document.getElementById("qrw_count");
+
+  // 函数功能：按关键字过滤标题或内容，需要时再按标题长度升序排列，返回当前要显示的数组
+  function qrw_currentList() {
+    var qrw_kw = qrw_keyword.trim().toLowerCase();
+
+    var qrw_arr = qrw_poemsAll.filter(function (qrw_poem) {
+      if (!qrw_kw) return true;
+      var qrw_title = (qrw_poem.title || "").toLowerCase();
+      var qrw_content = (qrw_poem.content || "").toLowerCase();
+      return qrw_title.indexOf(qrw_kw) > -1 || qrw_content.indexOf(qrw_kw) > -1;
+    });
+
+    if (qrw_sorted) {
+      qrw_arr.sort(function (qrw_a, qrw_b) {
+        return qrw_a.title.length - qrw_b.title.length;
+      });
+    }
+
+    return qrw_arr;
+  }
+
+  // 函数功能：渲染完成后复查一遍，把确实加载失败（已结束但宽高为 0）的图片换成占位图
+  function qrw_sweepBrokenImages() {
+    var qrw_imgs = qrw_list.querySelectorAll(".qrw_figure img");
+    qrw_imgs.forEach(function (qrw_img) {
+      if (qrw_img.complete && qrw_img.naturalWidth === 0) {
+        qrw_usePlaceholder(qrw_img, qrw_img.alt);
+      }
+    });
+  }
+
+  // 函数功能：按当前关键字与排序状态重绘列表，并更新计数与空结果提示
+  function qrw_render() {
+    var qrw_arr = qrw_currentList();
+
+    qrw_list.innerHTML = "";
+    qrw_count.textContent = qrw_keyword.trim()
+      ? "共 " + qrw_total + " 则 · 匹配 " + qrw_arr.length + " 则"
+      : "共 " + qrw_total + " 则";
+
+    if (!qrw_arr.length) {
+      qrw_list.innerHTML =
+        '<div class="qrw_state"><b>没有匹配的诗词</b>换个关键字试试，或清空搜索框</div>';
+      return;
+    }
+
+    qrw_arr.forEach(function (qrw_poem, qrw_i) {
+      qrw_list.appendChild(qrw_buildItem(qrw_poem, qrw_i));
+    });
+
+    setTimeout(qrw_sweepBrokenImages, 2500);
+  }
+
+  // 函数功能：把诗人列表渲染成页眉下方的一行名录，姓名后括注朝代
+  function qrw_renderAuthors(qrw_authors) {
+    var qrw_box = document.getElementById("qrw_authorList");
+    qrw_box.innerHTML = "";
+
+    if (!qrw_authors.length) {
+      qrw_box.innerHTML = "<span>暂无诗人数据</span>";
+      return;
+    }
+
+    qrw_authors.forEach(function (qrw_author) {
+      var qrw_one = document.createElement("span");
+      qrw_one.textContent =
+        qrw_author.name + (qrw_author.dynasty ? "（" + qrw_author.dynasty + "）" : "");
+      qrw_box.appendChild(qrw_one);
+    });
+  }
+
+  // 函数功能：用 Promise.all 同时请求诗词与诗人两个接口，两份数据都到齐后再分别渲染
+  function qrw_loadAll() {
+    Promise.all([
+      fetch("/api/poems").then(function (qrw_res) {
+        if (!qrw_res.ok) throw new Error("poems HTTP " + qrw_res.status);
+        return qrw_res.json();
+      }),
+      fetch("/api/authors").then(function (qrw_res) {
+        if (!qrw_res.ok) throw new Error("authors HTTP " + qrw_res.status);
+        return qrw_res.json();
+      })
+    ])
+      .then(function (qrw_all) {
+        qrw_poemsAll = qrw_all[0].poems || [];
+        qrw_total = qrw_poemsAll.length;
+        qrw_render();
+        qrw_renderAuthors(qrw_all[1].authors || []);
+      })
+      .catch(function (qrw_err) {
+        qrw_list.innerHTML =
+          '<div class="qrw_state"><b>取不到数据</b>' +
+          "请先在项目根目录运行 <code>node db/server.js</code>，" +
+          "再访问 <code>http://localhost:3004/poem-gallery.html</code>。" +
+          "<br>错误信息：" + qrw_err.message + "</div>";
+        qrw_count.textContent = "接口未连通";
+        document.getElementById("qrw_authorList").innerHTML = "<span>取不到诗人数据</span>";
+      });
+  }
+
+  // 函数功能：输入框内容变化时立即在已取到的数据上过滤，不重新请求接口
+  qrw_searchInput.addEventListener("input", function () {
+    qrw_keyword = qrw_searchInput.value;
+    qrw_render();
+  });
+
+  // 函数功能：切换"按标题长度排序"与"恢复原始顺序"，只对缓存数据重排，不重新请求接口
+  qrw_sortBtn.addEventListener("click", function () {
+    qrw_sorted = !qrw_sorted;
+    qrw_sortBtn.textContent = qrw_sorted ? "恢复原始顺序" : "按标题长度排序";
+    qrw_sortBtn.classList.toggle("qrw_on", qrw_sorted);
+    qrw_render();
+  });
+
+  // 页面载入即同时发起两个请求
+  qrw_loadAll();
+</script>
+</body>
+</html>

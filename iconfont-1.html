@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<!--
+  作者：戚瑞雯
+  创建时间：2026-11-13
+  使用大模型：DeepSeek-V4.1-Flash
+  功能名称：Font Awesome 字体图标样本册（字体图标方式展示，含点击复制类名）
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>铅字样本册 · Font Awesome 字体图标</title>
+<link rel="stylesheet" href="cdn/fontawesome/css/all.min.css">
+<style>
+  /* 设计方向：铅字样本册——纸灰绿＋墨黑＋朱砂红，宋体标题，发丝线网格，无卡片 */
+  :root{
+    --qrw_paper:#e3e4dc;
+    --qrw_paper_2:#ecede6;
+    --qrw_ink:#16201e;
+    --qrw_ink_soft:#5c6660;
+    --qrw_rule:#b9bcb0;
+    --qrw_red:#c0342b;
+    --qrw_blue:#2b3f94;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    background:var(--qrw_paper);
+    color:var(--qrw_ink);
+    font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    line-height:1.75;
+    padding:0 0 64px;
+  }
+  .qrw_wrap{max-width:1120px;margin:0 auto;padding:0 28px}
+
+  /* —— 报头 —— */
+  .qrw_head{padding:44px 0 26px;border-bottom:2px solid var(--qrw_ink)}
+  .qrw_running{
+    display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    font-size:12.5px;letter-spacing:.06em;color:var(--qrw_ink_soft);
+    padding-bottom:10px;border-bottom:1px solid var(--qrw_rule);margin-bottom:26px;
+  }
+  .qrw_head h1{
+    font-family:"Songti SC","Noto Serif SC",Georgia,serif;
+    font-size:clamp(38px,6.4vw,72px);
+    font-weight:700;line-height:1.04;letter-spacing:-.01em;
+  }
+  .qrw_lead{
+    margin-top:20px;max-width:62ch;font-size:15.5px;color:#2c3634;
+  }
+  .qrw_lead em{font-style:normal;color:var(--qrw_red);font-weight:600}
+  .qrw_meta{
+    display:flex;flex-wrap:wrap;gap:0;margin-top:26px;
+    border-top:1px solid var(--qrw_rule);border-bottom:1px solid var(--qrw_rule);
+  }
+  .qrw_meta div{flex:1 1 180px;padding:12px 18px 12px 0}
+  .qrw_meta div + div{border-left:1px solid var(--qrw_rule);padding-left:18px}
+  .qrw_meta dt{font-size:11.5px;color:var(--qrw_ink_soft);letter-spacing:.08em}
+  .qrw_meta dd{font-size:14.5px;font-weight:600;margin-top:2px}
+
+  /* —— 章节标题 —— */
+  .qrw_sec{margin-top:52px}
+  .qrw_sec_title{
+    display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
+    padding-bottom:8px;border-bottom:1px solid var(--qrw_ink);margin-bottom:20px;
+  }
+  .qrw_sec_title h2{
+    font-family:"Songti SC","Noto Serif SC",Georgia,serif;
+    font-size:23px;font-weight:700;
+  }
+  .qrw_sec_title span{font-size:12.5px;color:var(--qrw_ink_soft)}
+
+  /* —— 图标网格：用 1px gap 画出印刷用的细格 —— */
+  .qrw_grid{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));
+    gap:1px;background:var(--qrw_rule);
+    border:1px solid var(--qrw_rule);
+  }
+  .qrw_cell{
+    background:var(--qrw_paper_2);padding:22px 18px 18px;
+    display:flex;flex-direction:column;gap:10px;
+    cursor:pointer;transition:background .18s ease;
+    text-align:left;border:none;font:inherit;color:inherit;
+  }
+  .qrw_cell:hover,.qrw_cell:focus-visible{background:#f6f7f1;outline:none}
+  .qrw_cell:focus-visible{box-shadow:inset 0 0 0 2px var(--qrw_red)}
+  .qrw_cell i{
+    font-size:34px;color:var(--qrw_ink);
+    transition:color .18s ease,transform .18s ease;
+  }
+  .qrw_cell:hover i,.qrw_cell:focus-visible i{color:var(--qrw_red);transform:translateY(-2px)}
+  .qrw_cell .qrw_cn{font-size:14.5px;font-weight:600}
+  .qrw_cell .qrw_code{
+    font-family:"SF Mono",Consolas,monospace;font-size:11.5px;color:var(--qrw_blue);
+    word-break:break-all;
+  }
+  .qrw_cell .qrw_use{font-size:12.5px;color:var(--qrw_ink_soft);line-height:1.6}
+
+  /* —— 字重说明 —— */
+  .qrw_note{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:26px;margin-top:22px;
+  }
+  .qrw_note article{padding-top:14px;border-top:1px solid var(--qrw_rule)}
+  .qrw_note h3{font-size:15px;margin-bottom:6px}
+  .qrw_note p{font-size:13.5px;color:#3a4441}
+  .qrw_note code{font-family:"SF Mono",Consolas,monospace;font-size:12.5px;color:var(--qrw_blue)}
+
+  /* —— 页脚 —— */
+  .qrw_foot{
+    margin-top:56px;padding-top:18px;border-top:2px solid var(--qrw_ink);
+    display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    font-size:13px;color:var(--qrw_ink_soft);
+  }
+  .qrw_back a,.qrw_next a{color:var(--qrw_ink);text-decoration:none;border-bottom:1px solid var(--qrw_ink)}
+  .qrw_back a:hover,.qrw_next a:hover{color:var(--qrw_red);border-color:var(--qrw_red)}
+
+  /* —— 复制提示 —— */
+  .qrw_toast{
+    position:fixed;left:50%;bottom:28px;transform:translate(-50%,14px);
+    background:var(--qrw_ink);color:#f2f3ee;font-size:13px;
+    padding:9px 18px;opacity:0;pointer-events:none;transition:opacity .2s ease,transform .2s ease;
+    letter-spacing:.02em;
+  }
+  .qrw_toast.qrw_on{opacity:1;transform:translate(-50%,0)}
+
+  @media (max-width:640px){
+    .qrw_wrap{padding:0 18px}
+    .qrw_head{padding-top:28px}
+    .qrw_meta div + div{border-left:none;padding-left:0}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none !important}
+  }
+</style>
+</head>
+<body>
+<div class="qrw_wrap">
+
+  <header class="qrw_head">
+    <p class="qrw_running">
+      <span>铅字样本册 · 第一辑</span>
+      <span>Font Awesome Free 6.5.2 · 字体图标</span>
+      <span>24 枚常用字形</span>
+    </p>
+    <h1>图标也是一种铅字</h1>
+    <p class="qrw_lead">
+      排字工人过去从字架上拣铅字，如今我们从字库里拣图标。字体图标和铅字一样，是
+      <em>字形</em>而不是图片：改字号、改颜色、加阴影，都是一行 CSS 的事。
+      下面每一格都可以点一下，复制它的类名。
+    </p>
+    <dl class="qrw_meta">
+      <div><dt>加载方式</dt><dd>@font-face 字体</dd></div>
+      <div><dt>字形来源</dt><dd>all.min.css</dd></div>
+      <div><dt>本地文件</dt><dd>cdn/fontawesome/</dd></div>
+      <div><dt>许可</dt><dd>CC BY 4.0 · 图标</dd></div>
+    </dl>
+  </header>
+
+  <section class="qrw_sec">
+    <div class="qrw_sec_title">
+      <h2>实心字形</h2>
+      <span>fa-solid 字重 · 900</span>
+    </div>
+    <div class="qrw_grid" id="qrw_solidGrid">
+      <button class="qrw_cell" data-code='<i class="fa-solid fa-house"></i>'>
+        <i class="fa-solid fa-house" aria-hidden="true"></i>
+        <span class="qrw_cn">首页</span>
+        <span class="qrw_code">fa-solid fa-house</span>
+        <span class="qrw_use">导航栏里代表站点入口</span>
+      </button>
+      <button class="qrw_cell" data-code='<i class="fa-solid fa-user"></i>'>
+        <i class="fa-solid fa-user" aria-hidden="true"></i>
+        <span class="qrw_cn">账户</span>
+        <span class="qrw_code">fa-solid fa-user</span>
+        <span class="qrw_use">头像占位与个人中心入口</span>
+      </button>
+      <button class="qrw_cell" data-code='<i class="fa-solid fa-magnifying-glass"></i>'>
+        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+        <span class="qrw_cn">搜索</span>
+        <span class="qrw_code">fa-solid fa-magnifying-glass</span>
+        <span class="qrw_use">搜索框左侧的放大镜</span>
+      </button>
+      <button class="qrw_cell" data-code='<i class="fa-solid fa-heart"></i>'>
+        <i class="fa-solid fa-heart" aria-hidden="true"></i>
+        <span class="qrw_cn">收藏</span>
+        <span class="qrw_code">fa-solid fa-heart</span>
+        <span class="qrw_use">点赞、加入心愿单</span>
+      </button>
+      <button class="qrw_cell" data-code='<i class="fa-solid fa-star"></i>'>
+        <i class="fa-solid fa-star" aria-hidden="true"></i>
+        <span class="qrw_cn">评分</span>
+        <span class="qrw_code">fa-solid fa-star</span>
+        <span class="qrw_use">评分条与精选标记</span>
+      </button>
+      <button class="qrw_cell" data-code='<i class="fa-solid fa-gear"></i>'>
+        <i class="fa-solid fa-gear" aria-hidden="true"></i>
+        <span class="qrw_cn">设置</span>
+        <span class="qrw_code">fa-solid fa-gear</span>
+        <span class="qrw_use">系统设置入口</span>
+      </button>
+      <button class="qrw_cell" data-code='<i class="fa-solid fa-bell"></i>'>
+        <i class="fa-solid fa-bell" aria-hidden="true"></i>
+        <span class="qrw_cn">通知</span>
+        <span class="qrw_code">fa-solid fa-bell</span>
+        <span class="qrw_use">消息提醒，可叠角标</span>
+      </button>
+      <button class="qrw_cell" data-code='<i class="fa-solid fa-envelope"></i>'>
+        <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+        <span class="qrw_cn">邮件</span>
+        <span class="qrw_code">fa-solid fa-envelope</span>
+        <span class="qrw_use">联系入口与订阅确认</span>
+      </button>
+      <button class="qrw_cell" data-code='<i class="fa-solid fa-calendar-days"></i>'>
+        <i class="fa-solid fa-calendar-days" aria-hidden="true"></i>
+        <span class="qrw_cn">日历</span>
+        <span class="qrw_code">fa-solid fa-calendar-days</span>
+        <span class="qrw_use">日程与日期选择</span>
+      </button>
+      <button class="qrw_cell" data-code='<i class="fa-solid fa-camera"></i>'>
+        <i class="fa-solid fa-camera" aria-hidden="true"></i>
+        <span class="qrw_cn">拍照</span>
+        <span class="qrw_code">fa-solid fa-camera</span>
+        <span class="qrw_use">上传头像、识别入口</span>
+      </button>
+      <button class="qrw_cell" data-code='<i class="fa-solid fa-cloud-arrow-up"></i>'>
+        <i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i>
+        <span class="qrw_cn">云上传</span>
+        <span class="qrw_code">fa-solid fa-cloud-arrow-up</span>
+        <span class="qrw_use">网盘上传与同步状态</span>
+      </button>
+      <button class="qrw_cell" data-code='<i class="fa-solid fa-code"></i>'>
+        <i class="fa-solid fa-code" aria-hidden="true"></i>
+        <span class="qrw_cn">代码</span>
+        <span class="qrw_code">fa-solid fa-code</span>
+        <span class="qrw_use">开发者文档与接口入口</span>
+      </button>
+      <button class="qrw_cell" data-code='<i class="fa-solid fa-compass"></i>'>
+        <i class="fa-solid fa-compass" aria-hidden="true"></i>
+        <span class="qrw_cn">探索</span>
+        <span class="qrw_code">fa-solid fa-compass</span>
+        <span class="qrw_use">发现页与本地生活</span>
+      </button>
+      <button class="qrw_cell" data-code='<i class="fa-solid fa-cart-shopping"></i>'>
+        <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+        <span class="qrw_cn">购物车</span>
+        <span class="qrw_code">fa-solid fa-cart-shopping</span>
+        <span class="qrw_use">电商顶栏，常带数量角标</span>
+      </button>
+      <button class="qrw_cell" data-code='<i class="fa-solid fa-download"></i>'>
+        <i class="fa-solid fa-download" aria-hidden="true"></i>
+        <span class="qrw_cn">下载</span>
+        <span class="qrw_code">fa-solid fa-download</span>
+        <span class="qrw_use">资源导出与安装包</span>
+      </button>
+      <button class="qrw_cell" data-code='<i class="fa-solid fa-pen-to-square"></i>'>
+        <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+        <span class="qrw_cn">编辑</span>
+        <span class="qrw_code">fa-solid fa-pen-to-square</span>
+        <span class="qrw_use">修改资料、写评论</span>
+      </button>
+      <button class="qrw_cell" data-code='<i class="fa-solid fa-phone"></i>'>
+        <i class="fa-solid fa-phone" aria-hidden="true"></i>
+        <span class="qrw_cn">电话</span>
+        <span class="qrw_code">fa-solid fa-phone</span>
+        <span class="qrw_use">客服热线，移动端直接拨号</span>
+      </button>
+      <button class="qrw_cell" data-code='<i class="fa-solid fa-trash-can"></i>'>
+        <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
+        <span class="qrw_cn">删除</span>
+        <span class="qrw_code">fa-solid fa-trash-can</span>
+        <span class="qrw_use">列表项的删除操作</span>
+      </button>
+      <button class="qrw_cell" data-code='<i class="fa-solid fa-lock"></i>'>
+        <i class="fa-solid fa-lock" aria-hidden="true"></i>
+        <span class="qrw_cn">安全</span>
+        <span class="qrw_code">fa-solid fa-lock</span>
+        <span class="qrw_use">HTTPS 标识与密码字段</span>
+      </button>
+      <button class="qrw_cell" data-code='<i class="fa-solid fa-location-dot"></i>'>
+        <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+        <span class="qrw_cn">定位</span>
+        <span class="qrw_code">fa-solid fa-location-dot</span>
+        <span class="qrw_use">门店地址与地图标记</span>
+      </button>
+      <button class="qrw_cell" data-code='<i class="fa-solid fa-paper-plane"></i>'>
+        <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+        <span class="qrw_cn">发送</span>
+        <span class="qrw_code">fa-solid fa-paper-plane</span>
+        <span class="qrw_use">聊天输入框的发送键</span>
+      </button>
+      <button class="qrw_cell" data-code='<i class="fa-solid fa-rocket"></i>'>
+        <i class="fa-solid fa-rocket" aria-hidden="true"></i>
+        <span class="qrw_cn">发布</span>
+        <span class="qrw_code">fa-solid fa-rocket</span>
+        <span class="qrw_use">新功能上线与加速服务</span>
+      </button>
+      <button class="qrw_cell" data-code='<i class="fa-solid fa-sun"></i>'>
+        <i class="fa-solid fa-sun" aria-hidden="true"></i>
+        <span class="qrw_cn">浅色</span>
+        <span class="qrw_code">fa-solid fa-sun</span>
+        <span class="qrw_use">主题切换到亮色模式</span>
+      </button>
+      <button class="qrw_cell" data-code='<i class="fa-solid fa-moon"></i>'>
+        <i class="fa-solid fa-moon" aria-hidden="true"></i>
+        <span class="qrw_cn">深色</span>
+        <span class="qrw_code">fa-solid fa-moon</span>
+        <span class="qrw_use">主题切换到暗色模式</span>
+      </button>
+    </div>
+  </section>
+
+  <section class="qrw_sec">
+    <div class="qrw_sec_title">
+      <h2>品牌字形</h2>
+      <span>fa-brands 字重 · 400</span>
+    </div>
+    <div class="qrw_grid">
+      <button class="qrw_cell" data-code='<i class="fa-brands fa-github"></i>'>
+        <i class="fa-brands fa-github" aria-hidden="true"></i>
+        <span class="qrw_cn">GitHub</span>
+        <span class="qrw_code">fa-brands fa-github</span>
+        <span class="qrw_use">开源仓库入口</span>
+      </button>
+      <button class="qrw_cell" data-code='<i class="fa-brands fa-weixin"></i>'>
+        <i class="fa-brands fa-weixin" aria-hidden="true"></i>
+        <span class="qrw_cn">微信</span>
+        <span class="qrw_code">fa-brands fa-weixin</span>
+        <span class="qrw_use">客服与分享渠道</span>
+      </button>
+      <button class="qrw_cell" data-code='<i class="fa-brands fa-bilibili"></i>'>
+        <i class="fa-brands fa-bilibili" aria-hidden="true"></i>
+        <span class="qrw_cn">哔哩哔哩</span>
+        <span class="qrw_code">fa-brands fa-bilibili</span>
+        <span class="qrw_use">视频课程外链</span>
+      </button>
+      <button class="qrw_cell" data-code='<i class="fa-brands fa-weibo"></i>'>
+        <i class="fa-brands fa-weibo" aria-hidden="true"></i>
+        <span class="qrw_cn">微博</span>
+        <span class="qrw_code">fa-brands fa-weibo</span>
+        <span class="qrw_use">官方账号动态</span>
+      </button>
+      <button class="qrw_cell" data-code='<i class="fa-brands fa-qq"></i>'>
+        <i class="fa-brands fa-qq" aria-hidden="true"></i>
+        <span class="qrw_cn">QQ</span>
+        <span class="qrw_code">fa-brands fa-qq</span>
+        <span class="qrw_use">客服与群组</span>
+      </button>
+      <button class="qrw_cell" data-code='<i class="fa-brands fa-apple"></i>'>
+        <i class="fa-brands fa-apple" aria-hidden="true"></i>
+        <span class="qrw_cn">App Store</span>
+        <span class="qrw_code">fa-brands fa-apple</span>
+        <span class="qrw_use">iOS 下载按钮</span>
+      </button>
+    </div>
+  </section>
+
+  <section class="qrw_sec">
+    <div class="qrw_sec_title">
+      <h2>为什么用字体，而不是图片</h2>
+      <span>三个实际好处</span>
+    </div>
+    <div class="qrw_note">
+      <article>
+        <h3>一行 CSS 就能改外观</h3>
+        <p>图标是字形，<code>font-size</code> 决定大小、<code>color</code> 决定颜色，不需要准备多套图片。</p>
+      </article>
+      <article>
+        <h3>高分辨率屏不糊</h3>
+        <p>矢量字形随系统渲染，缩放、打印都保持锐利，不必再切 2 倍图 3 倍图。</p>
+      </article>
+      <article>
+        <h3>一个文件覆盖全部</h3>
+        <p>整套图标压在一个 woff2 里，页面只多一次字体请求，减少零散图片请求。</p>
+      </article>
+    </div>
+  </section>
+
+  <footer class="qrw_foot">
+    <p class="qrw_back"><a href="webqrw/index.html">← 返回课堂实践目录首页</a></p>
+    <p class="qrw_next"><a href="iconfont-2.html">看下一册：Lucide SVG 图标 →</a></p>
+  </footer>
+</div>
+
+<div class="qrw_toast" id="qrw_toast">已复制类名</div>
+
+<script>
+  // 戚瑞雯：点击任意字形格子，把它的 HTML 类名复制到剪贴板，并在底部给出提示
+  var qrw_toast = document.getElementById("qrw_toast");
+  var qrw_toastTimer = null;
+
+  // 函数功能：显示底部提示条，2 秒后自动收起
+  function qrw_showToast(qrw_text) {
+    qrw_toast.textContent = qrw_text;
+    qrw_toast.classList.add("qrw_on");
+    clearTimeout(qrw_toastTimer);
+    qrw_toastTimer = setTimeout(function () {
+      qrw_toast.classList.remove("qrw_on");
+    }, 2000);
+  }
+
+  // 函数功能：把传入的图标 HTML 写入剪贴板——优先用 Clipboard API，失败则退回选中并复制的旧方案
+  function qrw_copyCode(qrw_code) {
+    // 旧方案：建一个不可见的输入框，选中后执行浏览器复制命令
+    var qrw_fallback = function () {
+      var qrw_box = document.createElement("textarea");
+      qrw_box.value = qrw_code;
+      qrw_box.setAttribute("readonly", "readonly");
+      qrw_box.style.position = "fixed";
+      qrw_box.style.top = "-1000px";
+      document.body.appendChild(qrw_box);
+      qrw_box.select();
+
+      var qrw_ok = false;
+      try {
+        qrw_ok = document.execCommand("copy");
+      } catch (qrw_err) {
+        qrw_ok = false;
+      }
+      document.body.removeChild(qrw_box);
+
+      qrw_showToast(qrw_ok ? "已复制：" + qrw_code : "复制失败，请手动选择类名");
+    };
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(qrw_code).then(function () {
+        qrw_showToast("已复制：" + qrw_code);
+      }).catch(qrw_fallback);
+    } else {
+      qrw_fallback();
+    }
+  }
+
+  // 函数功能：用事件委托监听所有字形格子的点击，读取 data-code 后复制
+  document.querySelectorAll(".qrw_cell").forEach(function (qrw_cell) {
+    qrw_cell.addEventListener("click", function () {
+      qrw_copyCode(qrw_cell.getAttribute("data-code"));
+    });
+  });
+</script>
+</body>
+</html>

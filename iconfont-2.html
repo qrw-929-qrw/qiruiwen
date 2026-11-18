@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<!--
+  作者：戚瑞雯
+  创建时间：2026-11-13
+  使用大模型：DeepSeek-V4.1-Flash
+  功能名称：Lucide 图标标本室（SVG 方式展示，含描边宽度调节）
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>夜间标本室 · Lucide SVG 图标</title>
+<style>
+  /* 设计方向：夜间标本室——深林绿展柜＋淡薄荷线稿＋琥珀标签，左栏竖排题名，无卡片阴影 */
+  :root{
+    --qrw_night:#0c201b;
+    --qrw_night_2:#122a24;
+    --qrw_night_3:#18352d;
+    --qrw_mint:#d6e7df;
+    --qrw_mint_dim:#7f9a90;
+    --qrw_amber:#e2a659;
+    --qrw_line:rgba(214,231,223,.14);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    background:var(--qrw_night);
+    color:var(--qrw_mint);
+    font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    line-height:1.75;
+    -webkit-font-smoothing:antialiased;
+  }
+  .qrw_shell{
+    display:grid;grid-template-columns:150px 1fr;
+    max-width:1180px;margin:0 auto;min-height:100vh;
+  }
+
+  /* —— 左侧展柜名牌 —— */
+  .qrw_rail{
+    border-right:1px solid var(--qrw_line);
+    padding:44px 0 32px;
+    position:sticky;top:0;height:100vh;
+    display:flex;flex-direction:column;justify-content:space-between;align-items:center;
+  }
+  .qrw_rail h1{
+    writing-mode:vertical-rl;
+    font-family:"Optima","Songti SC",Georgia,serif;
+    font-size:30px;font-weight:500;letter-spacing:.34em;
+    color:var(--qrw_mint);
+  }
+  .qrw_rail .qrw_rail_meta{
+    writing-mode:vertical-rl;font-size:11.5px;letter-spacing:.22em;
+    color:var(--qrw_mint_dim);
+  }
+  .qrw_rail .qrw_dot{width:7px;height:7px;border-radius:50%;background:var(--qrw_amber);margin-bottom:16px}
+
+  /* —— 主展区 —— */
+  .qrw_main{padding:52px 46px 64px}
+  .qrw_intro{max-width:60ch}
+  .qrw_kicker{
+    font-size:12px;letter-spacing:.16em;color:var(--qrw_amber);
+    border-bottom:1px solid var(--qrw_line);padding-bottom:12px;margin-bottom:26px;
+  }
+  .qrw_intro p{font-size:15px;color:#bcd2c9;margin-top:14px}
+  .qrw_intro p b{color:var(--qrw_mint);font-weight:600}
+
+  /* 焦点标本 */
+  .qrw_focus{
+    display:grid;grid-template-columns:1fr auto;align-items:end;gap:24px;
+    padding:38px 0 30px;border-bottom:1px solid var(--qrw_line);margin-top:34px;
+  }
+  .qrw_focus .qrw_focus_icon{color:var(--qrw_mint)}
+  .qrw_focus .qrw_focus_icon svg{width:132px;height:132px;display:block}
+  .qrw_focus .qrw_focus_txt{text-align:right}
+  .qrw_focus h2{font-family:"Optima","Songti SC",Georgia,serif;font-size:26px;font-weight:500;letter-spacing:.04em}
+  .qrw_focus p{font-size:13px;color:var(--qrw_mint_dim);max-width:26ch;margin-left:auto;margin-top:8px}
+
+  /* 描边控制 */
+  .qrw_control{
+    display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+    padding:22px 0;border-bottom:1px solid var(--qrw_line);
+  }
+  .qrw_control p{font-size:13px;color:var(--qrw_mint_dim);margin-right:auto}
+  .qrw_control p b{color:var(--qrw_mint);font-weight:600}
+  .qrw_swatches{display:flex;gap:6px}
+  .qrw_swatches button{
+    background:transparent;border:1px solid var(--qrw_line);color:var(--qrw_mint_dim);
+    font:inherit;font-size:12.5px;padding:5px 13px;cursor:pointer;
+    transition:color .18s ease,border-color .18s ease,background .18s ease;
+  }
+  .qrw_swatches button:hover{color:var(--qrw_mint);border-color:var(--qrw_mint_dim)}
+  .qrw_swatches button.qrw_on{color:var(--qrw_night);background:var(--qrw_amber);border-color:var(--qrw_amber);font-weight:600}
+  .qrw_swatches button:focus-visible{outline:2px solid var(--qrw_amber);outline-offset:2px}
+
+  /* 标本网格：细线分隔，无盒子 */
+  .qrw_cases{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+    margin-top:36px;border-top:1px solid var(--qrw_line);border-left:1px solid var(--qrw_line);
+  }
+  .qrw_case{
+    border-right:1px solid var(--qrw_line);border-bottom:1px solid var(--qrw_line);
+    padding:26px 20px 20px;display:flex;flex-direction:column;gap:12px;
+    transition:background .18s ease;
+  }
+  .qrw_case:hover{background:var(--qrw_night_2)}
+  .qrw_case:hover .qrw_case_icon{color:var(--qrw_amber)}
+  .qrw_case_icon{color:#b8cfc6;transition:color .18s ease}
+  .qrw_case_icon svg{width:30px;height:30px;display:block}
+  .qrw_case .qrw_case_name{font-size:13.5px;font-weight:600;color:var(--qrw_mint)}
+  .qrw_case .qrw_case_id{
+    font-family:"SF Mono",Consolas,monospace;font-size:11.5px;color:var(--qrw_mint_dim);
+  }
+
+  /* 页脚 */
+  .qrw_foot{
+    margin-top:52px;padding-top:20px;border-top:1px solid var(--qrw_line);
+    display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    font-size:13px;color:var(--qrw_mint_dim);
+  }
+  .qrw_foot a{color:var(--qrw_mint);text-decoration:none;border-bottom:1px solid var(--qrw_line)}
+  .qrw_foot a:hover{color:var(--qrw_amber);border-color:var(--qrw_amber)}
+
+  @media (max-width:820px){
+    .qrw_shell{grid-template-columns:1fr}
+    .qrw_rail{
+      position:static;height:auto;border-right:none;border-bottom:1px solid var(--qrw_line);
+      flex-direction:row;justify-content:space-between;align-items:center;padding:22px 24px;
+    }
+    .qrw_rail h1{writing-mode:horizontal-tb;font-size:22px;letter-spacing:.14em}
+    .qrw_rail .qrw_rail_meta{writing-mode:horizontal-tb;letter-spacing:.08em}
+    .qrw_main{padding:32px 24px 48px}
+    .qrw_focus{grid-template-columns:1fr;text-align:left}
+    .qrw_focus .qrw_focus_txt{text-align:left}
+    .qrw_focus p{margin-left:0}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none !important}
+  }
+</style>
+</head>
+<body>
+<div class="qrw_shell">
+
+  <aside class="qrw_rail">
+    <span class="qrw_dot" aria-hidden="true"></span>
+    <h1>夜间标本室</h1>
+    <p class="qrw_rail_meta">LUCIDE · 2024</p>
+  </aside>
+
+  <main class="qrw_main">
+    <div class="qrw_intro">
+      <p class="qrw_kicker">标本编号 L-000 至 L-023　共 24 件　描边类图标</p>
+      <h2 style="font-family:'Optima','Songti SC',Georgia,serif;font-size:clamp(26px,3.4vw,38px);font-weight:500;line-height:1.3;">
+        每一条线都可以拆开重装
+      </h2>
+      <p>
+        Lucide 的图标不是字形，而是 <b>SVG 线条</b>。也就是说，每一根线的粗细、颜色、端点形状，
+        都能单独改——就像标本能取出来放在显微镜下。右上角的四个按钮，换的是整套标本的描边。
+      </p>
+    </div>
+
+    <div class="qrw_focus">
+      <div class="qrw_focus_icon" id="qrw_focusIcon">
+        <i data-lucide="rocket"></i>
+      </div>
+      <div class="qrw_focus_txt">
+        <h2>焦点标本：rocket</h2>
+        <p>把描边调到 2.5 时，箭体的轮廓最接近木刻的刀口。</p>
+      </div>
+    </div>
+
+    <div class="qrw_control">
+      <p>当前描边 <b id="qrw_strokeNow">2</b> px　·　SVG 的 stroke-width 属性</p>
+      <div class="qrw_swatches" id="qrw_strokeBtns">
+        <button data-stroke="1">1</button>
+        <button data-stroke="1.5">1.5</button>
+        <button class="qrw_on" data-stroke="2">2</button>
+        <button data-stroke="2.5">2.5</button>
+      </div>
+    </div>
+
+    <div class="qrw_cases">
+      <div class="qrw_case"><span class="qrw_case_icon"><i data-lucide="house"></i></span><span class="qrw_case_name">首页</span><span class="qrw_case_id">house</span></div>
+      <div class="qrw_case"><span class="qrw_case_icon"><i data-lucide="user"></i></span><span class="qrw_case_name">账户</span><span class="qrw_case_id">user</span></div>
+      <div class="qrw_case"><span class="qrw_case_icon"><i data-lucide="search"></i></span><span class="qrw_case_name">搜索</span><span class="qrw_case_id">search</span></div>
+      <div class="qrw_case"><span class="qrw_case_icon"><i data-lucide="heart"></i></span><span class="qrw_case_name">收藏</span><span class="qrw_case_id">heart</span></div>
+      <div class="qrw_case"><span class="qrw_case_icon"><i data-lucide="star"></i></span><span class="qrw_case_name">评分</span><span class="qrw_case_id">star</span></div>
+      <div class="qrw_case"><span class="qrw_case_icon"><i data-lucide="settings"></i></span><span class="qrw_case_name">设置</span><span class="qrw_case_id">settings</span></div>
+      <div class="qrw_case"><span class="qrw_case_icon"><i data-lucide="bell"></i></span><span class="qrw_case_name">通知</span><span class="qrw_case_id">bell</span></div>
+      <div class="qrw_case"><span class="qrw_case_icon"><i data-lucide="mail"></i></span><span class="qrw_case_name">邮件</span><span class="qrw_case_id">mail</span></div>
+      <div class="qrw_case"><span class="qrw_case_icon"><i data-lucide="calendar-days"></i></span><span class="qrw_case_name">日历</span><span class="qrw_case_id">calendar-days</span></div>
+      <div class="qrw_case"><span class="qrw_case_icon"><i data-lucide="camera"></i></span><span class="qrw_case_name">拍照</span><span class="qrw_case_id">camera</span></div>
+      <div class="qrw_case"><span class="qrw_case_icon"><i data-lucide="cloud-upload"></i></span><span class="qrw_case_name">云上传</span><span class="qrw_case_id">cloud-upload</span></div>
+      <div class="qrw_case"><span class="qrw_case_icon"><i data-lucide="code"></i></span><span class="qrw_case_name">代码</span><span class="qrw_case_id">code</span></div>
+      <div class="qrw_case"><span class="qrw_case_icon"><i data-lucide="compass"></i></span><span class="qrw_case_name">探索</span><span class="qrw_case_id">compass</span></div>
+      <div class="qrw_case"><span class="qrw_case_icon"><i data-lucide="shopping-cart"></i></span><span class="qrw_case_name">购物车</span><span class="qrw_case_id">shopping-cart</span></div>
+      <div class="qrw_case"><span class="qrw_case_icon"><i data-lucide="download"></i></span><span class="qrw_case_name">下载</span><span class="qrw_case_id">download</span></div>
+      <div class="qrw_case"><span class="qrw_case_icon"><i data-lucide="pencil"></i></span><span class="qrw_case_name">编辑</span><span class="qrw_case_id">pencil</span></div>
+      <div class="qrw_case"><span class="qrw_case_icon"><i data-lucide="phone"></i></span><span class="qrw_case_name">电话</span><span class="qrw_case_id">phone</span></div>
+      <div class="qrw_case"><span class="qrw_case_icon"><i data-lucide="trash-2"></i></span><span class="qrw_case_name">删除</span><span class="qrw_case_id">trash-2</span></div>
+      <div class="qrw_case"><span class="qrw_case_icon"><i data-lucide="lock"></i></span><span class="qrw_case_name">安全</span><span class="qrw_case_id">lock</span></div>
+      <div class="qrw_case"><span class="qrw_case_icon"><i data-lucide="map-pin"></i></span><span class="qrw_case_name">定位</span><span class="qrw_case_id">map-pin</span></div>
+      <div class="qrw_case"><span class="qrw_case_icon"><i data-lucide="send"></i></span><span class="qrw_case_name">发送</span><span class="qrw_case_id">send</span></div>
+      <div class="qrw_case"><span class="qrw_case_icon"><i data-lucide="sun"></i></span><span class="qrw_case_name">浅色</span><span class="qrw_case_id">sun</span></div>
+      <div class="qrw_case"><span class="qrw_case_icon"><i data-lucide="moon"></i></span><span class="qrw_case_name">深色</span><span class="qrw_case_id">moon</span></div>
+      <div class="qrw_case"><span class="qrw_case_icon"><i data-lucide="wifi"></i></span><span class="qrw_case_name">网络</span><span class="qrw_case_id">wifi</span></div>
+    </div>
+
+    <footer class="qrw_foot">
+      <p><a href="webqrw/index.html">← 返回课堂实践目录首页</a></p>
+      <p><a href="iconfont-1.html">回看上一册：Font Awesome 字体图标</a></p>
+    </footer>
+  </main>
+</div>
+
+<script src="cdn/lucide/lucide.min.js"></script>
+<script>
+  // 戚瑞雯：先把页面里的 <i data-lucide> 全部替换成内联 SVG，再绑定描边控制
+  lucide.createIcons();
+
+  // 函数功能：把页面上所有 Lucide SVG 的 stroke-width 统一设为传入的数值
+  function qrw_setStroke(qrw_width) {
+    var qrw_svgs = document.querySelectorAll(".qrw_case_icon svg, #qrw_focusIcon svg");
+    qrw_svgs.forEach(function (qrw_svg) {
+      qrw_svg.setAttribute("stroke-width", qrw_width);
+    });
+    document.getElementById("qrw_strokeNow").textContent = qrw_width;
+  }
+
+  // 函数功能：事件委托切换描边粗细——先清除全部按钮选中态，再高亮当前按钮并应用新描边
+  document.getElementById("qrw_strokeBtns").addEventListener("click", function (qrw_e) {
+    var qrw_btn = qrw_e.target.closest("button");
+    if (!qrw_btn) return;
+
+    this.querySelectorAll("button").forEach(function (qrw_b) {
+      qrw_b.classList.remove("qrw_on");
+    });
+    qrw_btn.classList.add("qrw_on");
+
+    qrw_setStroke(qrw_btn.getAttribute("data-stroke"));
+  });
+</script>
+</body>
+</html>
